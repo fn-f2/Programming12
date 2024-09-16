@@ -33,6 +33,7 @@ void screen4()
   fill(#000000);
   circle(-123, 231, 30);
 
+  //body panels continued
   fill(#c0c0c0);
   quad(190, 200, -95, 200, -97, 225, 200, 225);
   fill(#b2b1b1);
@@ -67,10 +68,13 @@ void screen4()
   light(-150, 75);
   light(114, 75);
   light(149, 75);
-
+  
+  //stuff behind liscense plate
   fill(#000000);
   quad(57, 69, -57, 69, -57, 122, 57, 122);
   quad(86, 69, -86, 69, -87, 100, 87, 100);
+  
+  //liscense plate
   fill(#dedcdc);
   quad(45, 76, -45, 76, -45, 116, 45, 116);
   popMatrix();
@@ -125,5 +129,12 @@ void innerLight(float x, float y)
 
 void screen4Click()
 {
-  mode = SCREEN1;
+  if (dist(mouseX, mouseY, b1X, b1Y) <= 70)
+  {
+    mode-=2;
+  }
+  else if (dist(mouseX, mouseY, b2X, b2Y) <= 70)
+  {
+    mode = SCREEN1;
+  }
 }

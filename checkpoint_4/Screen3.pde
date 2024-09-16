@@ -5,5 +5,5 @@ void screen3()
 
 void screen3Click()
 {
-  mode++;
+  //mode++;
 }

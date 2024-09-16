@@ -20,11 +20,6 @@ void screen1()
   }
 }
 
-void screen1Click()
-{
-  mode++;
-}
-
 void unit(int x_, int y_, int type_)
 {
   pushMatrix();
@@ -42,4 +37,16 @@ void unit(int x_, int y_, int type_)
     i++;
   }
   popMatrix();
+}
+
+void screen1Click()
+{
+  if (dist(mouseX, mouseY, b1X, b1Y) <= 70)
+  {
+    mode = SCREEN4;
+  }
+  else if (dist(mouseX, mouseY, b2X, b2Y) <= 70)
+  {
+    mode++;
+  }
 }
