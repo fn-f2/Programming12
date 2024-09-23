@@ -1,7 +1,7 @@
 void game()
 {
   background(bgcol);
-  
+
   //road
   fill(#000000, 34);
   noStroke();
@@ -14,9 +14,17 @@ void game()
   fill(#323232);
   rect(width/2, height/2, 437, height+20); //road inner
   roadLines(); //lines
-  
+
   //cars
   drawCars();
+  
+  for (int i = 0; i < myCars.size(); i++)
+  {
+    if (myCars.get(i).x < 200 || myCars.get(i).x > 800)
+    {
+      mode = GAMEOVER;
+    }
+  }
 }
 
 void gameClick()
@@ -25,10 +33,11 @@ void gameClick()
 
 void drawCars()
 {
-  Car1.show();
-  Car1.act(wkey, akey, skey, dkey);
-  Car2.show();
-  Car2.act(upkey, leftkey, downkey, rightkey);
+  for (int i = 0; i < myCars.size(); i++)
+  {
+    myCars.get(i).show();
+    myCars.get(i).act();
+  }
 }
 
 void roadLines()
@@ -36,7 +45,7 @@ void roadLines()
   for (int i = 0; i < height*2; i+=160)
   {
     myRoadLines.add(new roadLine());
-    
+
     roadLine line = myRoadLines.get(i/160);
     line.show(i-height);
     line.act();

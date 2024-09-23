@@ -26,6 +26,7 @@ color bgcol;
 Car Car1;
 Car Car2;
 
+ArrayList<Car> myCars;
 ArrayList<roadLine> myRoadLines;
 
 void setup()
@@ -35,16 +36,22 @@ void setup()
   textAlign(CENTER, CENTER);
   rectMode(CENTER);
   mode = GAME;
-  
+
   colorMode(HSB);
   bgcol = color(random(0, 255), 180, 180);
   colorMode(RGB);
   
-  Car1 = new Car();
-  Car2 = new Car();
+  //initialize cars
+  myCars = new ArrayList();
   
   //initialize road lines
   myRoadLines = new ArrayList();
+  
+  Car1 = new Car(width/2-100);
+  Car2 = new Car(width/2+100);
+  
+  myCars.add(Car1);
+  myCars.add(Car2);
 }
 
 void draw()
@@ -67,4 +74,7 @@ void draw()
     println("ERROR: Mode = " + mode);
     break;
   }
+  
+  Car1.updateKeys(wkey, akey, skey, dkey);
+  Car2.updateKeys(upkey, leftkey, downkey, rightkey);
 }

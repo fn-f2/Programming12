@@ -14,7 +14,7 @@ class roadLine
     {
       y = yoffset;
     }
-    else rect(width/2, y, 27, 80);
+    else rect(width/2, y, 27, 70);
   }
 
   void act()
