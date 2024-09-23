@@ -1,9 +1,9 @@
 void game()
 {
-  background(#f0a646);
+  background(bgcol);
   
   //road
-  fill(#ca812c);
+  fill(#000000, 34);
   noStroke();
   rect(width/2+74, height/2, 484, height+20); //road shadow
   strokeWeight(18);

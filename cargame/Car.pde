@@ -12,7 +12,7 @@ class Car
     y = height/2;
     speed = 8;
     steerAngle = radians(270);
-    maxAngle = radians(30);
+    maxAngle = radians(20);
     straightAngle = radians(270);
   }
 
@@ -28,6 +28,7 @@ class Car
     square(0, 0, 100);
     popMatrix();
     fill(#000000);
+    textSize(20);
     text(degrees(steerAngle), 0, 0);
     popMatrix();
   }
@@ -43,9 +44,9 @@ class Car
 
     if (left)
     {
-      if (steerAngle > straightAngle-maxAngle && steerAngle < straightAngle+radians(60)) steerAngle-=radians(5);
+      if (steerAngle > straightAngle-maxAngle && steerAngle < straightAngle+radians(60)) steerAngle-=radians(3);
       x -= speed;
-    } else if (steerAngle < straightAngle) steerAngle += radians(5);
+    } else if (steerAngle < straightAngle) steerAngle += radians(3);
 
     if (back)
     {
@@ -56,14 +57,14 @@ class Car
 
     if (right)
     {
-      if (steerAngle > straightAngle-radians(60) && steerAngle < straightAngle+maxAngle) steerAngle+=radians(5);
+      if (steerAngle > straightAngle-radians(60) && steerAngle < straightAngle+maxAngle) steerAngle+=radians(3);
       x += speed;
-    } else if (steerAngle > straightAngle) steerAngle -= radians(5);
+    } else if (steerAngle > straightAngle) steerAngle -= radians(3);
 
     if (left && right)
     {
-      if (steerAngle < straightAngle) steerAngle += radians(5);
-      if (steerAngle > straightAngle) steerAngle -= radians(5);
+      if (steerAngle < straightAngle) steerAngle += radians(3);
+      if (steerAngle > straightAngle) steerAngle -= radians(3);
     }
   }
 }

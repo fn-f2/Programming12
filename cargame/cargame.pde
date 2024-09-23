@@ -21,7 +21,7 @@ boolean downkey;
 boolean rightkey;
 
 //COLOUR VARIABLES
-color none = color(0, 0);
+color bgcol;
 
 Car Car1;
 Car Car2;
@@ -35,6 +35,11 @@ void setup()
   textAlign(CENTER, CENTER);
   rectMode(CENTER);
   mode = GAME;
+  
+  colorMode(HSB);
+  bgcol = color(random(0, 255), 180, 180);
+  colorMode(RGB);
+  
   Car1 = new Car();
   Car2 = new Car();
   
