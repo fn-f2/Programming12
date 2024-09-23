@@ -26,6 +26,8 @@ color none = color(0, 0);
 Car Car1;
 Car Car2;
 
+ArrayList<roadLine> myRoadLines;
+
 void setup()
 {
   size(1000, 600);
@@ -35,6 +37,9 @@ void setup()
   mode = GAME;
   Car1 = new Car();
   Car2 = new Car();
+  
+  //initialize road lines
+  myRoadLines = new ArrayList();
 }
 
 void draw()

@@ -2,7 +2,7 @@ class Car
 {
   float x, y;
   float speed;
-  float angle;
+  float steerAngle;
   float maxAngle;
   float straightAngle;
 
@@ -10,8 +10,8 @@ class Car
   {
     x = width/2;
     y = height/2;
-    speed = 6;
-    angle = radians(270);
+    speed = 8;
+    steerAngle = radians(270);
     maxAngle = radians(30);
     straightAngle = radians(270);
   }
@@ -21,14 +21,14 @@ class Car
     pushMatrix();
     translate(x, y);
     pushMatrix();
-    if (angle > TWO_PI) angle = 0;
-    if (angle < 0) angle = TWO_PI;
-    rotate(angle);
+    if (steerAngle > TWO_PI) steerAngle = 0;
+    if (steerAngle < 0) steerAngle = TWO_PI;
+    rotate(steerAngle);
     fill(#ffffff);
-    square(0, 0, 50);
+    square(0, 0, 100);
     popMatrix();
     fill(#000000);
-    text(degrees(angle), 0, 0);
+    text(degrees(steerAngle), 0, 0);
     popMatrix();
   }
 
@@ -38,32 +38,32 @@ class Car
     {
       //y+=speed*sin(angle);
       //x+=speed*cos(angle);
-      if (y > 25) y -= speed;
+      if (y > 50) y -= speed;
     }
 
     if (left)
     {
-      if (angle > straightAngle-maxAngle && angle < straightAngle+radians(60)) angle-=radians(5);
+      if (steerAngle > straightAngle-maxAngle && steerAngle < straightAngle+radians(60)) steerAngle-=radians(5);
       x -= speed;
-    } else if (angle < straightAngle) angle += radians(5);
+    } else if (steerAngle < straightAngle) steerAngle += radians(5);
 
     if (back)
     {
       //y-=speed*sin(angle);
       //x-=speed*cos(angle);
-      if (y < height-25)y += speed;
+      if (y < height-50)y += speed;
     }
 
     if (right)
     {
-      if (angle > straightAngle-radians(60) && angle < straightAngle+maxAngle) angle+=radians(5);
+      if (steerAngle > straightAngle-radians(60) && steerAngle < straightAngle+maxAngle) steerAngle+=radians(5);
       x += speed;
-    } else if (angle > straightAngle) angle -= radians(5);
+    } else if (steerAngle > straightAngle) steerAngle -= radians(5);
 
     if (left && right)
     {
-      if (angle < straightAngle) angle += radians(5);
-      if (angle > straightAngle) angle -= radians(5);
+      if (steerAngle < straightAngle) steerAngle += radians(5);
+      if (steerAngle > straightAngle) steerAngle -= radians(5);
     }
   }
 }
