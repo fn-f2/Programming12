@@ -19,7 +19,8 @@ class roadLine
 
   void act()
   {
-    y+=16;
+    
+    if (!gameover) y+=16;
     if (y>height+80)
     {
       y = -height+5;

@@ -8,10 +8,18 @@ class Car
   float steerAngle;
   float maxAngle;
   float straightAngle;
+  float collisionSpeed;
+  float collisionAng;
+
   boolean fwd, left, back, right;
   boolean collide;
+  boolean turnOut;
 
-  Car(float startX)
+  color c;
+
+  Car hCar;
+
+  Car(float startX, color c)
   {
     lives = 3;
     x = startX;
@@ -22,6 +30,8 @@ class Car
     maxAngle = radians(20);
     straightAngle = radians(270);
     collide = false;
+    turnOut = false;
+    this.c = c;
   }
 
   void show()
@@ -33,28 +43,24 @@ class Car
     if (steerAngle < 0) steerAngle = TWO_PI;
     rotate(steerAngle);
     stroke(#000000);
-    strokeWeight(13);
-    fill(#ffffff);
-    rect(-18, 0, 124, 66);
+    strokeWeight(8);
+    fill(c);
+    rect(0, 0, 100, 54);
+    rect(-9, 0, 49, 39, 15);
     noStroke();
-    fill(#ff0000);
-    circle(-19, 0, 100);
+    //fill(#ff0000);
+    //circle(0, 0, 80);
     popMatrix();
-    //fill(#000000);
-    //textSize(20);
-    //text(degrees(steerAngle), 0, 0);
     popMatrix();
   }
 
   void act()
   {
-    if (!collide)
+    //movement
+    if (!collide && !gameover)
     {
-      //movement
       if (fwd)
       {
-        //y+=speed*sin(angle);
-        //x+=speed*cos(angle);
         if (y > 50) y -= speed;
       }
 
@@ -66,8 +72,6 @@ class Car
 
       if (back)
       {
-        //y-=speed*sin(angle);
-        //x-=speed*cos(angle);
         if (y < height-50)y += speed;
       }
 
@@ -84,35 +88,58 @@ class Car
       }
     }
 
-    //collision detection
-    for (int i = 0; i < myCars.size(); i++)
+    //collision
+    if (!collide) collisionSpeed = 15;
+    else handleCollision();
+  }
+
+  void handleCollision()
+  {
+    x -= collisionSpeed*cos(collisionAng);
+    if (y < height-50 && y > 50)
     {
-      //check if this x and y are the same as detected x and y
-      if (x != myCars.get(i).x && y != myCars.get(i).y)
-      {
-        if (dist(x, y, myCars.get(i).x, myCars.get(i).y) < 100)
-        {
-          collide = true;
-        }
-      }
-      println("Car " + (i+1) + ": " + myCars.get(i).collide);
-      
-      if (collide)
-      {
-        x+=(x-myCars.get(i).x)/80;
-        y+=(y-myCars.get(i).y)/80;
-      }
+      y -= collisionSpeed*sin(collisionAng);
     }
 
-    //handle this car collision
+    if (collisionSpeed > 0) collisionSpeed -= 1;
+    else
+    {
+      collide = false;
+      collisionSpeed = 15;
+    }
+    if (turnOut)
+    {
+      if (x > hCar.x && steerAngle < straightAngle+maxAngle) steerAngle += radians(6);
+      else if (x < hCar.x && steerAngle > straightAngle-maxAngle) steerAngle -= radians(6);
+    }
   }
 
   void reset()
   {
+    collide = false;
     lives = 3;
     steerAngle = radians(270);
     x = startX;
     y = height/2;
+    gameover = false;
+  }
+
+  void setCollide(boolean c, Car car2)
+  {
+    if (x > car2.x) collisionAng = asin((y-car2.y)/dist(car2.x, car2.y, x, y))-PI;
+    else collisionAng = -asin((y-car2.y)/dist(x, y, car2.x, car2.y));
+    println(degrees(collisionAng));
+    hCar = car2;
+    if (abs(y-hCar.y) < 80)
+    {
+      turnOut = true;
+    } else turnOut = false;
+    collide = c;
+  }
+
+  void setLives(int l)
+  {
+    lives = l;
   }
 
   void updateKeys(boolean fwd, boolean left, boolean back, boolean right)

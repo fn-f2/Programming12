@@ -17,18 +17,27 @@ void game()
 
   //cars
   drawCars();
-  
+
+  //detect car off road
   for (int i = 0; i < myCars.size(); i++)
   {
     if (myCars.get(i).x < 200 || myCars.get(i).x > 800)
     {
-      mode = GAMEOVER;
+      myCars.get(i).setLives(0);
+      gameover = true;
     }
   }
+
+  //collision
+  updateCollision();
+
+  //obstacles
+  updateObstacles();
 }
 
 void gameClick()
 {
+  resetCars();
 }
 
 void drawCars()
@@ -49,5 +58,43 @@ void roadLines()
     roadLine line = myRoadLines.get(i/160);
     line.show(i-height);
     line.act();
+  }
+}
+
+void updateObstacles()
+{
+  if (b) myObstacles.add(new Obstacle());
+  xoff+=0.1;
+  if (noise(xoff) > 0.6 && b)
+  {
+    b = false;
+  }
+  for (int i = 0; i < myObstacles.size(); i++)
+  {
+    myObstacles.get(i).show();
+    myObstacles.get(i).act();
+  }
+}
+
+void resetCars()
+{
+  for (int i = 0; i < myCars.size(); i++)
+  {
+    myCars.get(i).reset();
+  }
+}
+
+void updateCollision()
+{
+  for (int i = 0; i < myCars.size(); i++)
+  {
+    for (int i2 = 0; i2 < myCars.size(); i2++)
+    {
+      if (dist(myCars.get(i).x, myCars.get(i).y, myCars.get(i2).x, myCars.get(i2).y) < 85
+        && myCars.get(i).startX != myCars.get(i2).startX)
+      {
+        myCars.get(i).setCollide(true, myCars.get(i2));
+      }
+    }
   }
 }
