@@ -2,17 +2,17 @@ class Car
 {
   int lives;
 
-  float x, y;
+  float x, y, r;
   float startX;
   float speed;
   float steerAngle;
   float maxAngle;
   float straightAngle;
-  float collisionSpeed;
+  float ccollisionSpeed;
   float collisionAng;
 
   boolean fwd, left, back, right;
-  boolean collide;
+  boolean ccollide, ocollide;
   boolean turnOut;
 
   color c;
@@ -23,13 +23,14 @@ class Car
   {
     lives = 3;
     x = startX;
-    y = height/2;
+    y = height/2+100;
+    r = 85/2;
     this.startX = startX;
     speed = 8;
     steerAngle = radians(270);
     maxAngle = radians(20);
     straightAngle = radians(270);
-    collide = false;
+    ccollide = false;
     turnOut = false;
     this.c = c;
   }
@@ -48,8 +49,6 @@ class Car
     rect(0, 0, 100, 54);
     rect(-9, 0, 49, 39, 15);
     noStroke();
-    //fill(#ff0000);
-    //circle(0, 0, 80);
     popMatrix();
     popMatrix();
   }
@@ -57,7 +56,7 @@ class Car
   void act()
   {
     //movement
-    if (!collide && !gameover)
+    if (!ccollide && !gameover)
     {
       if (fwd)
       {
@@ -88,39 +87,47 @@ class Car
       }
     }
 
-    //collision
-    if (!collide) collisionSpeed = 15;
-    else handleCollision();
+    //car collision
+    if (ccollide) carCollision();
+    else ccollisionSpeed = 15;
+    
+    //obstacle collision
+    if (ocollide) obCollision();
   }
 
-  void handleCollision()
+  void carCollision()
   {
-    x -= collisionSpeed*cos(collisionAng);
+    x -= ccollisionSpeed*cos(collisionAng);
     if (y < height-50 && y > 50)
     {
-      y -= collisionSpeed*sin(collisionAng);
+      y -= ccollisionSpeed*sin(collisionAng);
     }
 
-    if (collisionSpeed > 0) collisionSpeed -= 1;
+    if (ccollisionSpeed > 0) ccollisionSpeed -= 1;
     else
     {
-      collide = false;
-      collisionSpeed = 15;
+      ccollide = false;
+      ccollisionSpeed = 15;
     }
     if (turnOut)
     {
-      if (x > hCar.x && steerAngle < straightAngle+maxAngle) steerAngle += radians(6);
-      else if (x < hCar.x && steerAngle > straightAngle-maxAngle) steerAngle -= radians(6);
+      if (x > hCar.x && steerAngle < straightAngle+maxAngle) steerAngle += radians(3);
+      else if (x < hCar.x && steerAngle > straightAngle-maxAngle) steerAngle -= radians(3);
     }
   }
-
-  void reset()
+  
+  void obCollision()
   {
-    collide = false;
+  
+  }
+
+  void resetC()
+  {
+    ccollide = false;
     lives = 3;
     steerAngle = radians(270);
     x = startX;
-    y = height/2;
+    y = height/2+100;
     gameover = false;
   }
 
@@ -128,13 +135,12 @@ class Car
   {
     if (x > car2.x) collisionAng = asin((y-car2.y)/dist(car2.x, car2.y, x, y))-PI;
     else collisionAng = -asin((y-car2.y)/dist(x, y, car2.x, car2.y));
-    println(degrees(collisionAng));
     hCar = car2;
-    if (abs(y-hCar.y) < 80)
+    if (abs(y-hCar.y) < 70)
     {
       turnOut = true;
     } else turnOut = false;
-    collide = c;
+    ccollide = c;
   }
 
   void setLives(int l)

@@ -9,10 +9,6 @@ final int GAME = 1;
 final int PAUSE = 2;
 final int GAMEOVER = 3;
 
-//perlin noise x offset
-float xoff = random(1000);
-boolean b = true;
-
 boolean gameover = false;
 
 //KEYBOARD VARIABLES
@@ -31,6 +27,8 @@ color bgcol;
 
 Car Car1;
 Car Car2;
+
+int spawnTimer = 400;
 
 ArrayList<Car> myCars;
 ArrayList<Obstacle> myObstacles;
@@ -58,8 +56,8 @@ void setup()
   myRoadLines = new ArrayList();
   
   //spawn pos, color
-  Car1 = new Car(width/2-100, #e94141);
-  Car2 = new Car(width/2+100, #32a9e7);
+  Car1 = new Car(width/2-115, #e94141);
+  Car2 = new Car(width/2+115, #32a9e7);
   
   myCars.add(Car1);
   myCars.add(Car2);

@@ -7,7 +7,7 @@ class Obstacle
 
   int lane;
 
-  float x, y;
+  float x, y, h;
 
   Obstacle()
   {
@@ -15,9 +15,12 @@ class Obstacle
 
     lane = coinFlip();
 
-    if (lane==0) x = 400;
-    else x = 600;
-    y = -150;
+    if (lane==0) x = 385;
+    else x = 615;
+    if (type==small) h = 100;
+    else if (type==medium) h = 200;
+    else if (type==large) h = 400;
+    y = -h/2;
   }
 
   void show()
@@ -25,20 +28,20 @@ class Obstacle
     if (type==small)
     {
       fill(#ffffff);
-      rect(x, y, 100, 100);
+      rect(x, y, 100, h);
     } else if (type==medium)
     {
       fill(#ffffff);
-      rect(x, y, 100, 100);
+      rect(x, y, 100, h);
     } else if (type==large)
     {
       fill(#ffffff);
-      rect(x, y, 100, 100);
+      rect(x, y, 100, h);
     }
   }
 
   void act()
   {
-    y+=4;
+    if (!gameover) y+=4;
   }
 }

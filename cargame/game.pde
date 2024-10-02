@@ -37,7 +37,7 @@ void game()
 
 void gameClick()
 {
-  resetCars();
+  reset();
 }
 
 void drawCars()
@@ -63,24 +63,33 @@ void roadLines()
 
 void updateObstacles()
 {
-  if (b) myObstacles.add(new Obstacle());
-  xoff+=0.1;
-  if (noise(xoff) > 0.6 && b)
+
+  if (spawnTimer==0)
   {
-    b = false;
+    myObstacles.add(new Obstacle());
+    spawnTimer = int(random(50, 300));
   }
+
+  spawnTimer--;
+
   for (int i = 0; i < myObstacles.size(); i++)
   {
     myObstacles.get(i).show();
     myObstacles.get(i).act();
+    if (myObstacles.get(i).y > height+myObstacles.get(i).h) myObstacles.remove(i);
   }
 }
 
-void resetCars()
+void reset()
 {
   for (int i = 0; i < myCars.size(); i++)
   {
-    myCars.get(i).reset();
+    myCars.get(i).resetC();
+  }
+
+  for (int i = 0; i < myObstacles.size(); i++)
+  {
+    myObstacles.remove(i);
   }
 }
 
@@ -95,6 +104,11 @@ void updateCollision()
       {
         myCars.get(i).setCollide(true, myCars.get(i2));
       }
+    }
+
+    for (int i3 = 0; i3 < myObstacles.size(); i3++)
+    {
+      println("hi");
     }
   }
 }
