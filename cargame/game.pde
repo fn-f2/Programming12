@@ -105,10 +105,5 @@ void updateCollision()
         myCars.get(i).setCollide(true, myCars.get(i2));
       }
     }
-
-    for (int i3 = 0; i3 < myObstacles.size(); i3++)
-    {
-      println("hi");
-    }
   }
 }

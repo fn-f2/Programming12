@@ -1,6 +1,7 @@
 class Car
 {
   int lives;
+  int ocollide;
 
   float x, y, r;
   float startX;
@@ -12,7 +13,7 @@ class Car
   float collisionAng;
 
   boolean fwd, left, back, right;
-  boolean ccollide, ocollide;
+  boolean ccollide;
   boolean turnOut;
 
   color c;
@@ -63,7 +64,7 @@ class Car
         if (y > 50) y -= speed;
       }
 
-      if (left)
+      if (left && ocollide != 2)
       {
         if (steerAngle > straightAngle-maxAngle && steerAngle < straightAngle+radians(60)) steerAngle-=radians(3);
         x -= speed;
@@ -74,7 +75,7 @@ class Car
         if (y < height-50)y += speed;
       }
 
-      if (right)
+      if (right && ocollide != 1)
       {
         if (steerAngle > straightAngle-radians(60) && steerAngle < straightAngle+maxAngle) steerAngle+=radians(3);
         x += speed;
@@ -92,7 +93,7 @@ class Car
     else ccollisionSpeed = 15;
     
     //obstacle collision
-    if (ocollide) obCollision();
+    obCollision();
   }
 
   void carCollision()
@@ -118,7 +119,24 @@ class Car
   
   void obCollision()
   {
-  
+    for (int i = 0; i < myObstacles.size(); i++)
+    {
+        //back collision
+        if (y > myObstacles.get(i).y //car y greater than obstacle y
+        && y-myObstacles.get(i).y < 45+myObstacles.get(i).h/2 //car touching obstacle
+        && x > myObstacles.get(i).x-50-45 //car x within range of obstacle x
+        && x < myObstacles.get(i).x+50+45)
+        {
+          y = myObstacles.get(i).y+myObstacles.get(i).h/2+45;
+        }
+        //side collision
+        if (y < myObstacles.get(i).y+myObstacles.get(i).h/2+45 && y > myObstacles.get(i).y-myObstacles.get(i).h/2)
+        {
+          if (x+45 >= myObstacles.get(i).x-50) ocollide = 1;
+          else if (x-45 <= myObstacles.get(i).x+50) ocollide = 2;
+        }
+        else ocollide = 0;
+    }
   }
 
   void resetC()
