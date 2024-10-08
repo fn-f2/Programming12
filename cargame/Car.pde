@@ -1,7 +1,8 @@
 class Car
 {
   int lives;
-  int ocollideside;
+  int xObCollide;
+  int yObCollide;
 
   float x, y, r;
   float startX;
@@ -11,11 +12,12 @@ class Car
   float straightAngle;
   float ccollisionSpeed;
   float collisionAng;
+  float scaleValue = 1;
 
   boolean fwd, left, back, right;
   boolean ccollide;
-  boolean ocollideback;
   boolean turnOut;
+  boolean shouldScale;
 
   color c;
 
@@ -42,6 +44,7 @@ class Car
     pushMatrix();
     translate(x, y);
     pushMatrix();
+    scale(scaleValue);
     if (steerAngle > TWO_PI) steerAngle = 0;
     if (steerAngle < 0) steerAngle = TWO_PI;
     rotate(steerAngle);
@@ -60,23 +63,23 @@ class Car
     //movement
     if (!ccollide && !gameover)
     {
-      if (fwd && !ocollideback)
+      if (fwd && yObCollide != 1)
       {
         if (y > 50) y -= speed;
       }
 
-      if (left && ocollideside != 2)
+      if (left && xObCollide != 2)
       {
         if (steerAngle > straightAngle-maxAngle && steerAngle < straightAngle+radians(60)) steerAngle-=radians(3);
         x -= speed;
       } else if (steerAngle < straightAngle) steerAngle += radians(3);
 
-      if (back)
+      if (back && yObCollide != 2)
       {
         if (y < height-50)y += speed;
       }
 
-      if (right && ocollideside != 1)
+      if (right && xObCollide != 1)
       {
         if (steerAngle > straightAngle-radians(60) && steerAngle < straightAngle+maxAngle) steerAngle+=radians(3);
         x += speed;
@@ -89,10 +92,13 @@ class Car
       }
     }
 
+    //shrink the car
+    if (shouldScale && scaleValue > 0) scaleValue -= 0.05;
+
     //car collision
     if (ccollide) carCollision();
     else ccollisionSpeed = 15;
-    
+
     //obstacle collision
     obCollision();
   }
@@ -117,53 +123,60 @@ class Car
       else if (x < hCar.x && steerAngle > straightAngle-maxAngle) steerAngle -= radians(3);
     }
   }
-  
+
   void obCollision()
   {
     for (int i = 0; i < myObstacles.size(); i++)
     {
-        //back collision
-        if (y-35 > myObstacles.get(i).y+myObstacles.get(i).h/2 //car y greater than obstacle y
-        && y-myObstacles.get(i).y < 50+myObstacles.get(i).h/2 //car touching obstacle
+      //y collision
+      if (y-myObstacles.get(i).y < 50+myObstacles.get(i).h/2 //car touching obstacle
         && x > myObstacles.get(i).x-50-30 //car x within range of obstacle x
-        && x < myObstacles.get(i).x+50+30)
+        && x < myObstacles.get(i).x+50+30
+        && y < height-45)
+      {
+        if (y-35 > myObstacles.get(i).y+myObstacles.get(i).h/2)
         {
           y = myObstacles.get(i).y+myObstacles.get(i).h/2+50;
-          ocollideback = true;
-        } else ocollideback = false;
-        
-        //side collision
-        if (y < myObstacles.get(i).y+myObstacles.get(i).h/2+45 && y > myObstacles.get(i).y-myObstacles.get(i).h/2) //check if car y is in range of obstacle y
+          yObCollide = 1;
+        } else if (y+35 < myObstacles.get(i).y-myObstacles.get(i).h/2)
         {
-          if (x > myObstacles.get(i).x-50-30 && x < myObstacles.get(i).x+50+30) //if car overlaps w obstacle
+          y = myObstacles.get(i).y-myObstacles.get(i).h/2-60;
+          yObCollide = 2;
+        }
+      } else yObCollide = 0;
+
+      //x collision
+      if (y < myObstacles.get(i).y+myObstacles.get(i).h/2+45 && y > myObstacles.get(i).y-myObstacles.get(i).h/2) //check if car y is in range of obstacle y
+      {
+        if (x > myObstacles.get(i).x-50-30 && x < myObstacles.get(i).x+50+30) //if car overlaps w obstacle
+        {
+          if (x > myObstacles.get(i).x)
           {
-            if (x > myObstacles.get(i).x)
-            {
-              x = myObstacles.get(i).x+50+30;
-              ocollideside = 2;
-            }
-            else
-            {
-              x = myObstacles.get(i).x-50-30;
-              ocollideside = 1;
-            }
+            x = myObstacles.get(i).x+50+30;
+            xObCollide = 2;
+          } else
+          {
+            x = myObstacles.get(i).x-50-30;
+            xObCollide = 1;
           }
         }
-        else ocollideside = 0;
+      } else xObCollide = 0;
     }
-    println(startX, ocollideside);
+    println(startX, xObCollide);
   }
 
   void resetC()
   {
     ccollide = false;
-    ocollideback = false;
-    ocollideside = 0;
+    yObCollide = 0;
+    xObCollide = 0;
     lives = 3;
     steerAngle = radians(270);
     x = startX;
     y = height/2+100;
     gameover = false;
+    scaleValue = 1;
+    shouldScale = false;
   }
 
   void setCollide(boolean c, Car car2)

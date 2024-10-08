@@ -24,6 +24,7 @@ void game()
     if (myCars.get(i).x < 200 || myCars.get(i).x > 800)
     {
       myCars.get(i).setLives(0);
+      myCars.get(i).shouldScale = true;
       gameover = true;
     }
   }
@@ -91,6 +92,7 @@ void reset()
   {
     myObstacles.remove(i);
   }
+  spawnTimer = 400;
 }
 
 void updateCollision()
