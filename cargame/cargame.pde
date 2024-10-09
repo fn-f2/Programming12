@@ -22,11 +22,17 @@ boolean leftkey;
 boolean downkey;
 boolean rightkey;
 
+//mouse variables
+boolean mouseReleased;
+boolean wasPressed;
+
 //COLOUR VARIABLES
 color bgcol;
 
 Car Car1;
 Car Car2;
+
+Button restartB;
 
 int spawnTimer = 400;
 
@@ -61,6 +67,8 @@ void setup()
   
   myCars.add(Car1);
   myCars.add(Car2);
+  
+  restartB = new Button("Restart", 100, 60, 160, 80, #000000, #ffffff);
 }
 
 void draw()
@@ -86,4 +94,7 @@ void draw()
   
   Car1.updateKeys(wkey, akey, skey, dkey);
   Car2.updateKeys(upkey, leftkey, downkey, rightkey);
+  
+  //check click
+  click();
 }

@@ -74,7 +74,7 @@ class Car
         x -= speed;
       } else if (steerAngle < straightAngle) steerAngle += radians(3);
 
-      if (back && yObCollide != 2)
+      if (back)
       {
         if (y < height-50)y += speed;
       }
@@ -129,40 +129,39 @@ class Car
     for (int i = 0; i < myObstacles.size(); i++)
     {
       //y collision
-      if (y-myObstacles.get(i).y < 50+myObstacles.get(i).h/2 //car touching obstacle
-        && x > myObstacles.get(i).x-50-30 //car x within range of obstacle x
+      if (x > myObstacles.get(i).x-50-30 //car x within range of obstacle x
         && x < myObstacles.get(i).x+50+30
         && y < height-45)
       {
-        if (y-35 > myObstacles.get(i).y+myObstacles.get(i).h/2)
+        if (y-35 > myObstacles.get(i).y+myObstacles.get(i).h/2 && y-myObstacles.get(i).y < 50+myObstacles.get(i).h/2) //car touching obstacle
         {
           y = myObstacles.get(i).y+myObstacles.get(i).h/2+50;
           yObCollide = 1;
-        } else if (y+35 < myObstacles.get(i).y-myObstacles.get(i).h/2)
+        } else if (y+35 < myObstacles.get(i).y-myObstacles.get(i).h/2 && myObstacles.get(i).y-y < 50+myObstacles.get(i).h/2)
         {
-          y = myObstacles.get(i).y-myObstacles.get(i).h/2-60;
+          y = myObstacles.get(i).y-myObstacles.get(i).h/2-50;
           yObCollide = 2;
         }
-      } else yObCollide = 0;
+      } else yObCollide = 0; //no y collision
 
       //x collision
       if (y < myObstacles.get(i).y+myObstacles.get(i).h/2+45 && y > myObstacles.get(i).y-myObstacles.get(i).h/2) //check if car y is in range of obstacle y
       {
         if (x > myObstacles.get(i).x-50-30 && x < myObstacles.get(i).x+50+30) //if car overlaps w obstacle
         {
-          if (x > myObstacles.get(i).x)
+          if (x > myObstacles.get(i).x) //check right side
           {
             x = myObstacles.get(i).x+50+30;
             xObCollide = 2;
-          } else
+          } else //check left side
           {
             x = myObstacles.get(i).x-50-30;
             xObCollide = 1;
           }
         }
-      } else xObCollide = 0;
+      } else xObCollide = 0; //no x collision
     }
-    println(startX, xObCollide);
+    //println(startX, xObCollide);
   }
 
   void resetC()

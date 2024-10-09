@@ -17,7 +17,7 @@ void game()
 
   //cars
   drawCars();
-
+  
   //detect car off road
   for (int i = 0; i < myCars.size(); i++)
   {
@@ -34,11 +34,15 @@ void game()
 
   //obstacles
   updateObstacles();
+  
+  //buttons
+  restartB.show();
+  
+  if (restartB.clicked) reset();
 }
 
 void gameClick()
 {
-  reset();
 }
 
 void drawCars()
