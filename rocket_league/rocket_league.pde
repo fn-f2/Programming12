@@ -21,6 +21,9 @@ boolean akey;
 boolean skey;
 boolean dkey;
 
+boolean wkeyReleased;
+boolean wkeyWasPressed;
+
 boolean upkey;
 boolean leftkey;
 boolean downkey;
@@ -41,7 +44,6 @@ FWorld world;
 void setup() {
   //make window
   fullScreen();
-  
   //load resources
 
   //initialise world
@@ -51,7 +53,7 @@ void setup() {
   makeGround();
   makeCircle();
   
-  car1 = new Car();
+  car1 = new Car(ground);
 }
 
 //===========================================================================================
@@ -59,6 +61,7 @@ void setup() {
 void makeWorld() {
   Fisica.init(this);
   world = new FWorld();
+  world.setEdges();
   world.setGravity(0, 900);
 }
 
@@ -86,13 +89,14 @@ void makeGround() {
 //===========================================================================================
 
 void draw() {
-  println("x: " + mouseX + " y: " + mouseY);
   background(blue);
 
   world.step();  //get box2D to calculate all the forces and new positions
   world.draw();  //ask box2D to convert this world to processing screen coordinates and draw
   
   drawCars();
+  
+  wkeyCheck();
 }
 
 
@@ -104,7 +108,7 @@ void makeCircle() {
 
   //set visuals
   circle.setStroke(0);
-  circle.setStrokeWeight(2);
+  circle.setStrokeWeight(0);
   circle.setFillColor(red);
 
   //set physical properties
