@@ -4,8 +4,6 @@ class Car
 
   int jumps;
 
-  float topspeed;
-
   boolean isGrounded;
 
   FPoly hitBox;
@@ -15,19 +13,20 @@ class Car
   {
     pos = new PVector(0, 0);
 
-    //topspeed = ;
+    //topspeed = ;sssddwdw
 
     hitBox = new FPoly();
-    //hitBox.vertex(width/2-50, height/2-50);
-    //hitBox.vertex(width/2-50, height/2+50);
-    //hitBox.vertex(width/2+50, height/2+50);
-    //hitBox.vertex(width/2+50, height/2-50);
-    hitBox.vertex(-50, -50);
-    hitBox.vertex(-50, +50);
-    hitBox.vertex(50, +50);
-    hitBox.vertex(50, -50);
+    hitBox.vertex(width/2-50, height/2-30);
+    hitBox.vertex(width/2-50, height/2+30);
+    hitBox.vertex(width/2+50, height/2+30);
+    hitBox.vertex(width/2+50, height/2-30);
+    //hitBox.vertex(-50, -50);
+    //hitBox.vertex(-50, +50);
+    //hitBox.vertex(50, +50);
+    //hitBox.vertex(50, -50);
     
     hitBox.setGrabbable(false);
+    hitBox.setRestitution(0);
 
     //visuals
     hitBox.setStrokeWeight(0);
@@ -39,6 +38,10 @@ class Car
 
   void show()
   {
+    pushMatrix();
+    translate(hitBox.getX(), hitBox.getY());
+    fill(#505050);
+    popMatrix();
   }
 
   void act()
@@ -48,25 +51,27 @@ class Car
     float vy = hitBox.getVelocityY();
 
     if (wkey && checkGrounded(grnd)) hitBox.setVelocity(vx, -500);
-    if (skey) hitBox.addForce(0, -50000);
-
+    if (skey)
+    {
+      if (sqrt(sq(vx)+sq(vy)) < 1000) hitBox.addForce(-40000*cos(hitBox.getRotation()), -40000*sin(hitBox.getRotation()));
+    }
 
     if (akey)
     {
       if (checkGrounded(grnd)) hitBox.addForce(-10000, 0);
       else
       {
-        hitBox.adjustRotation(radians(2));
+        hitBox.setAngularVelocity(-5);
       }
-    }
+    } else if (!dkey && !checkGrounded(grnd)) hitBox.setAngularVelocity(0);
     if (dkey)
     {
-      if (checkGrounded(grnd)) hitBox.addForce(-10000, 0);
+      if (checkGrounded(grnd)) hitBox.addForce(10000, 0);
       else
       {
-        hitBox.adjustRotation(radians(-2));
+        hitBox.setAngularVelocity(5);
       }
-    }
+    } else if (!akey && !checkGrounded(grnd)) hitBox.setAngularVelocity(0);
   }
 
   boolean checkGrounded(FPoly ground)

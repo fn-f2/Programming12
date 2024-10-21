@@ -62,7 +62,7 @@ void makeWorld() {
   Fisica.init(this);
   world = new FWorld();
   world.setEdges();
-  world.setGravity(0, 900);
+  world.setGravity(0, 600);
 }
 
 //===========================================================================================
@@ -112,7 +112,7 @@ void makeCircle() {
   circle.setFillColor(red);
 
   //set physical properties
-  circle.setDensity(0.01);
+  circle.setDensity(0.1);
   circle.setFriction(0);
   circle.setRestitution(1);
   circle.setGrabbable(false);
