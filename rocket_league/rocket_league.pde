@@ -44,6 +44,7 @@ FWorld world;
 void setup() {
   //make window
   fullScreen();
+  //size(600, 600);
   //load resources
 
   //initialise world
@@ -71,10 +72,14 @@ void makeGround() {
   ground = new FPoly();
 
   //plot the vertices of this platform
-  ground.vertex(0, height*.9);
+  ground.vertex(width*0.05, 0);
+  ground.vertex(0, 0);
   ground.vertex(0, height);
   ground.vertex(width, height);
-  ground.vertex(width, height*.9);
+  ground.vertex(width, 0);
+  ground.vertex(width*0.95, 0);
+  ground.vertex(width*0.95, height*0.9);
+  ground.vertex(width*0.05, height*0.9);
 
   // define properties
   ground.setStatic(true);
@@ -104,7 +109,7 @@ void draw() {
 
 void makeCircle() {
   FCircle circle = new FCircle(100);
-  circle.setPosition(random(width), -5);
+  circle.setPosition(random(width*0.05+50, width*0.95-50), -5);
 
   //set visuals
   circle.setStroke(0);
