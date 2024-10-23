@@ -72,14 +72,10 @@ void makeGround() {
   ground = new FPoly();
 
   //plot the vertices of this platform
-  ground.vertex(width*0.05, 0);
-  ground.vertex(0, 0);
   ground.vertex(0, height);
   ground.vertex(width, height);
-  ground.vertex(width, 0);
-  ground.vertex(width*0.95, 0);
-  ground.vertex(width*0.95, height*0.9);
-  ground.vertex(width*0.05, height*0.9);
+  ground.vertex(width, height*0.9);
+  ground.vertex(0, height*0.9);
 
   // define properties
   ground.setStatic(true);
@@ -102,6 +98,9 @@ void draw() {
   drawCars();
   
   wkeyCheck();
+  
+  fill(#000000);
+  text("wkey: " + wkey +  "         jumps: " + car1.jumps, width/2, height/2, 100);
 }
 
 
