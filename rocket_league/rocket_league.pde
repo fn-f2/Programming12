@@ -44,7 +44,7 @@ FWorld world;
 void setup() {
   //make window
   fullScreen();
-  //size(600, 600);
+  //size(1920, 1080);
   //load resources
 
   //initialise world
@@ -63,7 +63,7 @@ void makeWorld() {
   Fisica.init(this);
   world = new FWorld();
   world.setEdges();
-  world.setGravity(0, 600);
+  world.setGravity(0, 300);
 }
 
 //===========================================================================================
@@ -107,7 +107,7 @@ void draw() {
 //===========================================================================================
 
 void makeCircle() {
-  FCircle circle = new FCircle(100);
+  FCircle circle = new FCircle(80);
   circle.setPosition(random(width*0.05+50, width*0.95-50), -5);
 
   //set visuals

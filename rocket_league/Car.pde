@@ -3,6 +3,7 @@ class Car
   PVector pos;
 
   int jumps;
+  int xDir;
 
   boolean isGrounded;
 
@@ -16,10 +17,10 @@ class Car
     jumps = 1;
 
     hitBox = new FPoly();
-    hitBox.vertex(width/2-50, height/2-30);
-    hitBox.vertex(width/2-50, height/2+30);
-    hitBox.vertex(width/2+50, height/2+30);
-    hitBox.vertex(width/2+50, height/2-30);
+    hitBox.vertex(width/2-35, height/2-20);
+    hitBox.vertex(width/2-35, height/2+20);
+    hitBox.vertex(width/2+35, height/2+20);
+    hitBox.vertex(width/2+35, height/2-20);
     //hitBox.vertex(-50, -50);
     //hitBox.vertex(-50, +50);
     //hitBox.vertex(50, +50);
@@ -38,12 +39,21 @@ class Car
 
   void show()
   {
+    pushMatrix();
+    translate(hitBox.getX(), hitBox.getY());
+    rotate(hitBox.getRotation());
+    fill(#505050);
+    rectMode(CENTER);
+    rect(width/2+(20*xDir), height/2, 20, 10);
+    popMatrix();
   }
 
   void act()
   {
     float vx = hitBox.getVelocityX();
     float vy = hitBox.getVelocityY();
+
+    hitBox.addForce(0, 2000);
 
     if (wkey)
     {
@@ -53,7 +63,7 @@ class Car
         hitBox.adjustVelocity(0, -500);
       } else if (jumps > 0)
       {
-        hitBox.addForce(-400000*cos(hitBox.getRotation()+radians(90)), -400000*sin(hitBox.getRotation()+radians(90)));
+        hitBox.addForce(-170000*cos(hitBox.getRotation()+radians(90)), -170000*sin(hitBox.getRotation()+radians(90)));
       }
       if (jumps > 0) jumps--;
       wkey = false;
@@ -62,15 +72,18 @@ class Car
 
     if (skey)
     {
-      if (sqrt(sq(vx)+sq(vy)) < 700) hitBox.addForce(-40000*cos(hitBox.getRotation()), -40000*sin(hitBox.getRotation()));
+      hitBox.adjustVelocity(27*xDir*cos(hitBox.getRotation()), 27*xDir*sin(hitBox.getRotation()));
     }
 
     if (akey)
     {
-      if (checkGrounded(grnd)) hitBox.addForce(-25000, 100000);
-      else
+      if (checkGrounded(grnd))
       {
-        hitBox.setAngularVelocity(-5);
+        xDir = -1;
+        hitBox.addForce(-17000, 100000);
+      } else
+      {
+        hitBox.setAngularVelocity(-4);
       }
     } else if (!dkey && !checkGrounded(grnd)) hitBox.setAngularVelocity(0);
 
@@ -81,10 +94,13 @@ class Car
 
     if (dkey)
     {
-      if (checkGrounded(grnd)) hitBox.addForce(25000, 100000);
-      else
+      if (checkGrounded(grnd))
       {
-        hitBox.setAngularVelocity(5);
+        xDir = 1;
+        hitBox.addForce(17000, 100000);
+      } else
+      {
+        hitBox.setAngularVelocity(4);
       }
     } else if (!akey && !checkGrounded(grnd)) hitBox.setAngularVelocity(0);
 
