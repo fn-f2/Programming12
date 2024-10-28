@@ -31,9 +31,10 @@ boolean rightkey;
 
 //buttons
 
-
+ArrayList<Car> myCars;
 
 Car car1;
+Car car2;
 
 FPoly ground; 
 FPoly bottomPlatform;
@@ -54,7 +55,13 @@ void setup() {
   makeGround();
   makeCircle();
   
+  myCars = new ArrayList();
+  
   car1 = new Car(ground);
+  myCars.add(car1);
+  
+  car2 = new Car(ground);
+  myCars.add(car2);
 }
 
 //===========================================================================================
@@ -100,7 +107,7 @@ void draw() {
   wkeyCheck();
   
   fill(#000000);
-  text("wkey: " + wkey +  "         jumps: " + car1.jumps, width/2, height/2, 100);
+  text("", width/2, height/2, 100);
 }
 
 
@@ -127,6 +134,16 @@ void makeCircle() {
 
 void drawCars()
 {
+  //for (int i = 0; i > myCars.size(); i++)
+  //{
+  //  myCars.get(i).show();
+  //  myCars.get(i).act();
+  //}
   car1.show();
   car1.act();
+  car2.show();
+  car2.act();
+  
+  car1.updateKeys(wkey, skey, akey, dkey);
+  car2.updateKeys(upkey, downkey, leftkey, rightkey);
 }

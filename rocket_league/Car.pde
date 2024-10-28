@@ -5,7 +5,9 @@ class Car
   int jumps;
   int xDir;
 
-  boolean isGrounded;
+  boolean canJump = true;
+  
+  boolean up, down, left, right;
 
   FPoly hitBox;
   FPoly grnd;
@@ -45,6 +47,9 @@ class Car
     fill(#505050);
     rectMode(CENTER);
     rect(width/2+(20*xDir), height/2, 20, 10);
+    fill(#000000);
+    circle(width/2+25, height/2+15, 20);
+    circle(width/2-25, height/2+15, 20);
     popMatrix();
   }
 
@@ -55,7 +60,7 @@ class Car
 
     hitBox.addForce(0, 2000);
 
-    if (wkey)
+    if (up && canJump)
     {
       if (checkGrounded(grnd))
       {
@@ -66,21 +71,21 @@ class Car
         hitBox.addForce(-170000*cos(hitBox.getRotation()+radians(90)), -170000*sin(hitBox.getRotation()+radians(90)));
       }
       if (jumps > 0) jumps--;
-      wkey = false;
+      canJump = false;
     }
 
 
-    if (skey)
+    if (down)
     {
       hitBox.adjustVelocity(27*xDir*cos(hitBox.getRotation()), 27*xDir*sin(hitBox.getRotation()));
     }
-
-    if (akey)
+    
+    if (left)
     {
-      if (checkGrounded(grnd))
+      if (checkGrounded(grnd) && (abs(degrees(hitBox.getRotation())%360) > 359 || abs(degrees(hitBox.getRotation())%360) < 1))
       {
         xDir = -1;
-        hitBox.addForce(-17000, 100000);
+        hitBox.addForce(-13000, 0);
       } else
       {
         hitBox.setAngularVelocity(-4);
@@ -92,19 +97,27 @@ class Car
       hitBox.setAngularVelocity(0);
     }
 
-    if (dkey)
+    if (right)
     {
-      if (checkGrounded(grnd))
+      if (checkGrounded(grnd) && (abs(degrees(hitBox.getRotation())%360) > 359 || abs(degrees(hitBox.getRotation())%360) < 1))
       {
         xDir = 1;
-        hitBox.addForce(17000, 100000);
+        hitBox.addForce(13000, 0);
       } else
       {
         hitBox.setAngularVelocity(4);
       }
     } else if (!akey && !checkGrounded(grnd)) hitBox.setAngularVelocity(0);
 
-    if (checkGrounded(grnd)) jumps = 2;
+    if (checkGrounded(grnd))
+    {
+      jumps = 2;
+      //if car rightside up
+      if (abs(degrees(hitBox.getRotation())%360) > 330 || abs(degrees(hitBox.getRotation())%360) < 60)
+      {
+        hitBox.addForce(0, 30000);
+      }
+  }
   }
 
   boolean checkGrounded(FPoly ground)
@@ -119,5 +132,13 @@ class Car
       }
     }
     return false;
+  }
+  
+  void updateKeys(boolean u, boolean d, boolean l, boolean r)
+  {
+    up = u;
+    down = d;
+    left = l;
+    right = r;
   }
 }
