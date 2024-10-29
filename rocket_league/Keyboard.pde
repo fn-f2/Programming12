@@ -14,8 +14,8 @@ void keyReleased()
 {
   if (key == 'w' || key == 'W')
   {
-    wkey = false;
     car1.canJump = true;
+    wkey = false;
   }
   if (key == 'a' || key == 'A') akey = false;
   if (key == 's' || key == 'S') skey = false;
@@ -23,8 +23,8 @@ void keyReleased()
 
   if (keyCode == UP)
   {
+    car2.canJump = true;
     upkey = false;
-    car2.canJump = false;
   }
   if (keyCode == LEFT) leftkey = false;
   if (keyCode == DOWN) downkey = false;

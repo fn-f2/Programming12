@@ -36,7 +36,8 @@ ArrayList<Car> myCars;
 Car car1;
 Car car2;
 
-FPoly ground; 
+FPoly ground;
+FCircle ball;
 FPoly bottomPlatform;
 
 //fisica
@@ -53,14 +54,14 @@ void setup() {
 
   //add terrain to world
   makeGround();
-  makeCircle();
+  drawBall();
   
   myCars = new ArrayList();
   
-  car1 = new Car(ground);
+  car1 = new Car(ground, ball, 100);
   myCars.add(car1);
   
-  car2 = new Car(ground);
+  car2 = new Car(ground, ball, width-100);
   myCars.add(car2);
 }
 
@@ -107,33 +108,36 @@ void draw() {
   wkeyCheck();
   
   fill(#000000);
-  text("", width/2, height/2, 100);
+  text("jumps: " + car1.jumps + "        can jump: " + car1.canJump, width/2, height/2, 100);
 }
 
 
 //===========================================================================================
 
-void makeCircle() {
-  FCircle circle = new FCircle(80);
-  circle.setPosition(random(width*0.05+50, width*0.95-50), -5);
+void drawBall() {
+  FCircle ball = new FCircle(80);
+  ball.setPosition(random(width*0.05+50, width*0.95-50), -5);
 
   //set visuals
-  circle.setStroke(0);
-  circle.setStrokeWeight(0);
-  circle.setFillColor(red);
+  ball.setStroke(0);
+  ball.setStrokeWeight(0);
+  ball.setFillColor(red);
 
   //set physical properties
-  circle.setDensity(0.1);
-  circle.setFriction(0);
-  circle.setRestitution(1);
-  circle.setGrabbable(false);
+  ball.setDensity(0.1);
+  ball.setFriction(0);
+  ball.setRestitution(1);
+  ball.setGrabbable(false);
   
   //add to world
-  world.add(circle);
+  world.add(ball);
 }
 
 void drawCars()
 {
+  car1.updateKeys(wkey, skey, akey, dkey);
+  car2.updateKeys(upkey, downkey, leftkey, rightkey);
+  
   //for (int i = 0; i > myCars.size(); i++)
   //{
   //  myCars.get(i).show();
@@ -144,6 +148,4 @@ void drawCars()
   car2.show();
   car2.act();
   
-  car1.updateKeys(wkey, skey, akey, dkey);
-  car2.updateKeys(upkey, downkey, leftkey, rightkey);
 }
