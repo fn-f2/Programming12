@@ -11,15 +11,18 @@ class Car
 
   boolean up, down, left, right;
 
+  color teamCol;
+
   FPoly hitBox;
   FPoly ground;
   FCircle ball;
 
-  Car(FPoly grnd, FCircle bll, int strtX)
+  Car(FPoly grnd, FCircle bll, int strtX, color col)
   {
     ground = grnd;
     ball = bll;
     startX = strtX;
+    teamCol = col;
 
     pos = new PVector(0, 0);
 
@@ -53,10 +56,11 @@ class Car
     pushMatrix();
     translate(hitBox.getX(), hitBox.getY());
     rotate(hitBox.getRotation());
-    fill(#505050);
+    noStroke();
+    fill(teamCol);
     rectMode(CENTER);
-    rect(startX+(20*xDir), height/2, 20, 10);
-    fill(#000000);
+    rect(startX+20*xDir, height/2, 20, 10);
+    fill(0);
     circle(startX+25, height/2+15, 20);
     circle(startX-25, height/2+15, 20);
     popMatrix();
@@ -65,24 +69,26 @@ class Car
   void act()
   {
     isGrounded = checkGrounded(ground);
-    
+
     //extra gravity
     hitBox.addForce(0, 2000);
 
     if (up && canJump)
     {
-      if (isGrounded)
+      jumps--;
+      if (isGrounded) //ground jump
       {
         hitBox.adjustPosition(0, -10);
         hitBox.adjustVelocity(0, -500);
-      } else if (jumps > 0)
+      } else if (jumps >= 0) //air jump
       {
         hitBox.addForce(-170000*cos(hitBox.getRotation()+radians(90)), -170000*sin(hitBox.getRotation()+radians(90)));
       }
-      
-      if (jumps > 0) jumps--;
+
       canJump = false;
     }
+    
+    if (jumps < 0) jumps = 0;
 
 
     if (down)
@@ -95,31 +101,34 @@ class Car
       if (isGrounded && (abs(degrees(hitBox.getRotation())%360) > 359 || abs(degrees(hitBox.getRotation())%360) < 1))
       {
         xDir = -1;
-        hitBox.addForce(-13000, 0);
+        hitBox.addForce(-10000, 0);
       } else
       {
         hitBox.setAngularVelocity(-4);
       }
-    } else if (!dkey && !isGrounded) hitBox.setAngularVelocity(0);
+    } else if (!right && !isGrounded) hitBox.setAngularVelocity(0);
 
     if (right)
     {
       if (isGrounded && (abs(degrees(hitBox.getRotation())%360) > 359 || abs(degrees(hitBox.getRotation())%360) < 1))
       {
         xDir = 1;
-        hitBox.addForce(13000, 0);
+        hitBox.addForce(10000, 0);
       } else
       {
         hitBox.setAngularVelocity(4);
       }
-    } else if (!akey && !isGrounded) hitBox.setAngularVelocity(0);
+    } else if (!left && !isGrounded) hitBox.setAngularVelocity(0);
+
+    isGrounded = checkGrounded(ground);
+
 
     if (isGrounded)
     {
       hitBox.setAngularVelocity(0);
 
       jumps = 2;
-      
+
       //if car rightside up
       if (abs(degrees(hitBox.getRotation())%360) > 330 || abs(degrees(hitBox.getRotation())%360) < 60)
       {

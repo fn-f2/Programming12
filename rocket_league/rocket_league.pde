@@ -45,8 +45,8 @@ FWorld world;
 
 void setup() {
   //make window
-  fullScreen();
-  //size(1920, 1080);
+  //fullScreen();
+  size(800, 600);
   //load resources
 
   //initialise world
@@ -58,10 +58,10 @@ void setup() {
   
   myCars = new ArrayList();
   
-  car1 = new Car(ground, ball, 100);
+  car1 = new Car(ground, ball, 100, #0367FD);
   myCars.add(car1);
   
-  car2 = new Car(ground, ball, width-100);
+  car2 = new Car(ground, ball, width-100, #FE9900);
   myCars.add(car2);
 }
 
@@ -70,7 +70,7 @@ void setup() {
 void makeWorld() {
   Fisica.init(this);
   world = new FWorld();
-  world.setEdges();
+  world.setEdges(50);
   world.setGravity(0, 300);
 }
 
@@ -88,7 +88,8 @@ void makeGround() {
   // define properties
   ground.setStatic(true);
   ground.setGrabbable(false);
-  ground.setFillColor(brown);
+  ground.setNoStroke();
+  ground.setFillColor(#58673E);
   ground.setFriction(0.1);
 
   //put it in the world
@@ -98,14 +99,14 @@ void makeGround() {
 //===========================================================================================
 
 void draw() {
-  background(blue);
+  background(#AED3E0);
 
   world.step();  //get box2D to calculate all the forces and new positions
   world.draw();  //ask box2D to convert this world to processing screen coordinates and draw
   
   drawCars();
   
-  wkeyCheck();
+  //wkeyCheck();
   
   fill(#000000);
   text("jumps: " + car1.jumps + "        can jump: " + car1.canJump, width/2, height/2, 100);
@@ -120,8 +121,8 @@ void drawBall() {
 
   //set visuals
   ball.setStroke(0);
-  ball.setStrokeWeight(0);
-  ball.setFillColor(red);
+  ball.setNoStroke();
+  ball.setFillColor(#909090);
 
   //set physical properties
   ball.setDensity(0.1);
@@ -138,14 +139,9 @@ void drawCars()
   car1.updateKeys(wkey, skey, akey, dkey);
   car2.updateKeys(upkey, downkey, leftkey, rightkey);
   
-  //for (int i = 0; i > myCars.size(); i++)
-  //{
-  //  myCars.get(i).show();
-  //  myCars.get(i).act();
-  //}
-  car1.show();
-  car1.act();
-  car2.show();
-  car2.act();
-  
+  for (int i = 0; i < myCars.size(); i++)
+  {
+    myCars.get(i).show();
+    myCars.get(i).act();
+  }
 }
