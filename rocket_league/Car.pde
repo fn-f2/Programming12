@@ -15,12 +15,10 @@ class Car
 
   FPoly hitBox;
   FPoly ground;
-  FCircle ball;
 
-  Car(FPoly grnd, FCircle bll, int strtX, color col)
+  Car(FPoly grnd, FCircle ball, int strtX, color col)
   {
     ground = grnd;
-    ball = bll;
     startX = strtX;
     teamCol = col;
 
@@ -28,8 +26,8 @@ class Car
 
     jumps = 1;
 
-    //if (startX < ball.getX()) xDir = 1;
-    //else xDir = -1;
+    if (startX < ball.getX()) xDir = 1;
+    else xDir = -1;
 
     hitBox = new FPoly();
     hitBox.vertex(startX-35, height/2-20);
@@ -59,6 +57,7 @@ class Car
     noStroke();
     fill(teamCol);
     rectMode(CENTER);
+    triangle(startX+20*xDir, height/2, startX, height/2, startX, height/2-20);
     rect(startX+20*xDir, height/2, 20, 10);
     fill(0);
     circle(startX+25, height/2+15, 20);

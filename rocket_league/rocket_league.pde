@@ -45,8 +45,7 @@ FWorld world;
 
 void setup() {
   //make window
-  //fullScreen();
-  size(800, 600);
+  fullScreen();
   //load resources
 
   //initialise world
@@ -116,7 +115,7 @@ void draw() {
 //===========================================================================================
 
 void drawBall() {
-  FCircle ball = new FCircle(80);
+  ball = new FCircle(80);
   ball.setPosition(random(width*0.05+50, width*0.95-50), -5);
 
   //set visuals
