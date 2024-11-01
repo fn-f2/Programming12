@@ -37,6 +37,7 @@ Car car1;
 Car car2;
 
 FPoly ground;
+FPoly wall;
 FCircle ball;
 FPoly bottomPlatform;
 
@@ -52,14 +53,15 @@ void setup() {
   makeWorld();
 
   //add terrain to world
-  makeGround();
+  drawWalls();
+  drawGround();
   drawBall();
-  
+
   myCars = new ArrayList();
-  
+
   car1 = new Car(ground, ball, 100, #0367FD);
   myCars.add(car1);
-  
+
   car2 = new Car(ground, ball, width-100, #FE9900);
   myCars.add(car2);
 }
@@ -69,20 +71,20 @@ void setup() {
 void makeWorld() {
   Fisica.init(this);
   world = new FWorld();
-  world.setEdges(50);
+  //world.setEdges(50);
   world.setGravity(0, 300);
 }
 
 //===========================================================================================
 
-void makeGround() {
+void drawGround() {
   ground = new FPoly();
 
   //plot the vertices of this platform
   ground.vertex(0, height);
   ground.vertex(width, height);
-  ground.vertex(width, height*0.9);
-  ground.vertex(0, height*0.9);
+  ground.vertex(width, height-50);
+  ground.vertex(0, height-50);
 
   // define properties
   ground.setStatic(true);
@@ -95,6 +97,53 @@ void makeGround() {
   world.add(ground);
 }
 
+
+void drawWalls()
+{
+  wall = new FPoly();
+
+  wall.vertex(-200, height);
+  wall.vertex(-200, -50);
+  wall.vertex(width+200, -50);
+  wall.vertex(width+200, height);
+
+  //right curve
+  wall.vertex(width-150, height-50);
+  wall.vertex(width-105, height-65);
+  wall.vertex(width-65, height-105);
+  wall.vertex(width-50, height-150);
+
+  //right goal
+  wall.vertex(width-50, height/2+110);
+  wall.vertex(width+90, height/2+110);
+  wall.vertex(width+90, height/2-140);
+  wall.vertex(width-50, height/2-140);
+  wall.vertex(width-50, 0);
+
+  //left goal
+  wall.vertex(50, 0);
+  wall.vertex(50, height/2-140);
+  wall.vertex(-90, height/2-140);
+  wall.vertex(-90, height/2+110);
+  wall.vertex(50, height/2+110);
+
+  //left curve
+  wall.vertex(50, height-150);
+  wall.vertex(65, height-105);
+  wall.vertex(105, height-65);
+  wall.vertex(150, height-50);
+
+  // define properties
+  wall.setStatic(true);
+  wall.setGrabbable(false);
+  wall.setNoStroke();
+  wall.setFillColor(#505050);
+  wall.setFriction(0.1);
+
+  //put it in the world
+  world.add(wall);
+}
+
 //===========================================================================================
 
 void draw() {
@@ -102,13 +151,25 @@ void draw() {
 
   world.step();  //get box2D to calculate all the forces and new positions
   world.draw();  //ask box2D to convert this world to processing screen coordinates and draw
-  
+
   drawCars();
+
+
+  //detect goals
+  if (ball.getX() > width+40)
+  {
+    ball.setVelocity(0, 0);
+    ball.setPosition(width/2, height/2);
+  }
   
-  //wkeyCheck();
+  if (ball.getX() < -40)
+  {
+    ball.setVelocity(0, 0);
+    ball.setPosition(width/2, height/2);
+  }
   
-  fill(#000000);
-  text("jumps: " + car1.jumps + "        can jump: " + car1.canJump, width/2, height/2, 100);
+  //fill(#000000);
+  //text("jumps: " + car1.jumps + "        can jump: " + car1.canJump, width/2, height/2, 100);
 }
 
 
@@ -116,7 +177,7 @@ void draw() {
 
 void drawBall() {
   ball = new FCircle(80);
-  ball.setPosition(random(width*0.05+50, width*0.95-50), -5);
+  ball.setPosition(width/2, height/2);
 
   //set visuals
   ball.setStroke(0);
@@ -128,7 +189,7 @@ void drawBall() {
   ball.setFriction(0);
   ball.setRestitution(1);
   ball.setGrabbable(false);
-  
+
   //add to world
   world.add(ball);
 }
@@ -137,7 +198,7 @@ void drawCars()
 {
   car1.updateKeys(wkey, skey, akey, dkey);
   car2.updateKeys(upkey, downkey, leftkey, rightkey);
-  
+
   for (int i = 0; i < myCars.size(); i++)
   {
     myCars.get(i).show();
