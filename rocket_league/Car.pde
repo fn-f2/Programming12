@@ -12,6 +12,8 @@ class Car
   boolean up, down, left, right;
 
   color teamCol;
+  
+  ArrayList<Boost> myBoost;
 
   FPoly hitBox;
   FPoly ground;
@@ -21,6 +23,8 @@ class Car
     ground = grnd;
     startX = strtX;
     teamCol = col;
+
+    myBoost = new ArrayList();
 
     pos = new PVector(0, 0);
 
@@ -93,6 +97,10 @@ class Car
     if (down)
     {
       hitBox.adjustVelocity(27*xDir*cos(hitBox.getRotation()), 27*xDir*sin(hitBox.getRotation()));
+      
+      
+      //boost
+      myBoost.add(new Boost(hitBox.getX(), hitBox.getY(), hitBox.getRotation(), xDir));
     }
 
     if (left)
@@ -132,6 +140,17 @@ class Car
       if (abs(degrees(hitBox.getRotation())%360) > 330 || abs(degrees(hitBox.getRotation())%360) < 60)
       {
         hitBox.addForce(0, 30000);
+      }
+    }
+    
+    //boost ======================================================================
+    for (int i = 0; i < myBoost.size(); i++)
+    {
+      myBoost.get(i).show(hitBox.getRotation(), startX, xDir);
+      myBoost.get(i).act();
+      if (myBoost.get(i).checkDist())
+      {
+        myBoost.remove(i);
       }
     }
   }
