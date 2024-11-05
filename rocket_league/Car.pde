@@ -4,7 +4,7 @@ class Car
 
   int jumps;
   int xDir;
-  int startX;
+  int startX, startY;
 
   boolean isGrounded;
   boolean canJump = true;
@@ -22,6 +22,7 @@ class Car
   {
     ground = grnd;
     startX = strtX;
+    startY = int(height*0.9);
     teamCol = col;
 
     myBoost = new ArrayList();
@@ -34,10 +35,10 @@ class Car
     else xDir = -1;
 
     hitBox = new FPoly();
-    hitBox.vertex(startX-35, height/2-20);
-    hitBox.vertex(startX-35, height/2+20);
-    hitBox.vertex(startX+35, height/2+20);
-    hitBox.vertex(startX+35, height/2-20);
+    hitBox.vertex(startX-35, startY-20);
+    hitBox.vertex(startX-35, startY+20);
+    hitBox.vertex(startX+35, startY+20);
+    hitBox.vertex(startX+35, startY-20);
     //hitBox.vertex(-50, -50);
     //hitBox.vertex(-50, +50);
     //hitBox.vertex(50, +50);
@@ -59,13 +60,16 @@ class Car
     translate(hitBox.getX(), hitBox.getY());
     rotate(hitBox.getRotation());
     noStroke();
-    fill(teamCol);
     rectMode(CENTER);
-    triangle(startX+20*xDir, height/2, startX, height/2, startX, height/2-20);
-    rect(startX+20*xDir, height/2, 20, 10);
+    fill(teamCol);
+    triangle(startX+40*xDir, startY+20, startX, startY+20, startX, startY);
+    fill(#000000);
+    triangle(startX+20*xDir, startY, startX, startY, startX, startY-20);
+    fill(teamCol);
+    rect(startX-30*xDir, startY, 20, 10);
     fill(0);
-    circle(startX+25, height/2+15, 20);
-    circle(startX-25, height/2+15, 20);
+    circle(startX+25, startY+15, 20);
+    circle(startX-25, startY+15, 20);
     popMatrix();
   }
 
@@ -100,6 +104,11 @@ class Car
       
       
       //boost
+      //pushMatrix();
+      //translate(hitBox.getX(), hitBox.getY());
+      //rotate(hitBox.getRotation());
+      //circle(startX-40, height/2, 100);
+      //popMatrix();
       myBoost.add(new Boost(hitBox.getX(), hitBox.getY(), hitBox.getRotation(), xDir));
     }
 
@@ -146,9 +155,9 @@ class Car
     //boost ======================================================================
     for (int i = 0; i < myBoost.size(); i++)
     {
-      myBoost.get(i).show(hitBox.getRotation(), startX, xDir);
+      myBoost.get(i).show(hitBox.getRotation(), startX, startY, xDir);
       myBoost.get(i).act();
-      if (myBoost.get(i).checkDist())
+      if (myBoost.get(i).boostTimer > 100)
       {
         myBoost.remove(i);
       }

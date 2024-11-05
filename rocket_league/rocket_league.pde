@@ -59,10 +59,10 @@ void setup() {
 
   myCars = new ArrayList();
 
-  car1 = new Car(ground, ball, 100, #0367FD);
+  car1 = new Car(ground, ball, 200, #0367FD);
   myCars.add(car1);
 
-  car2 = new Car(ground, ball, width-100, #FE9900);
+  car2 = new Car(ground, ball, width-200, #FE9900);
   myCars.add(car2);
 }
 
