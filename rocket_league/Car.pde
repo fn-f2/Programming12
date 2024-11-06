@@ -21,8 +21,8 @@ class Car
   Car(FPoly grnd, FCircle ball, int strtX, color col)
   {
     ground = grnd;
-    startX = strtX;
-    startY = int(height*0.9);
+    startX = 0;//strtX;
+    startY = 0;//int(height*0.9);
     teamCol = col;
 
     myBoost = new ArrayList();
@@ -57,6 +57,7 @@ class Car
   void show()
   {
     pushMatrix();
+    println(hitBox.getX(), hitBox.getY(),startX, startY);
     translate(hitBox.getX(), hitBox.getY());
     rotate(hitBox.getRotation());
     noStroke();
@@ -108,8 +109,8 @@ class Car
       //translate(hitBox.getX(), hitBox.getY());
       //rotate(hitBox.getRotation());
       //circle(startX-40, height/2, 100);
-      //popMatrix();
-      myBoost.add(new Boost(hitBox.getX(), hitBox.getY(), hitBox.getRotation(), xDir));
+    //popMatrix();
+      myBoost.add(new Boost(hitBox.getX()+startX, hitBox.getY()+startY, hitBox.getRotation(), xDir));
     }
 
     if (left)
@@ -155,9 +156,9 @@ class Car
     //boost ======================================================================
     for (int i = 0; i < myBoost.size(); i++)
     {
-      myBoost.get(i).show(hitBox.getRotation(), startX, startY, xDir);
+      myBoost.get(i).show();
       myBoost.get(i).act();
-      if (myBoost.get(i).boostTimer > 100)
+      if (myBoost.get(i).boostTimer > 50)
       {
         myBoost.remove(i);
       }

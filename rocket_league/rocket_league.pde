@@ -161,15 +161,15 @@ void draw() {
     ball.setVelocity(0, 0);
     ball.setPosition(width/2, height/2);
   }
-  
+
   if (ball.getX() < -40)
   {
     ball.setVelocity(0, 0);
     ball.setPosition(width/2, height/2);
   }
-  
-  //fill(#000000);
-  //text("jumps: " + car1.jumps + "        can jump: " + car1.canJump, width/2, height/2, 100);
+
+  fill(#000000);
+  text(car1.hitBox.getX(), width/2, height/2, 100);
 }
 
 
@@ -201,7 +201,7 @@ void drawCars()
 
   for (int i = 0; i < myCars.size(); i++)
   {
-    myCars.get(i).show();
     myCars.get(i).act();
+    myCars.get(i).show();
   }
 }
