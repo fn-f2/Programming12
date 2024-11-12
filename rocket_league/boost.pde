@@ -11,24 +11,31 @@ class Boost
     speed = 1;
     dir = direction;
     boostTimer = 0;
-    vx = -speed * dir * cos(rotation);
-    vy = -speed * dir * sin(rotation);
-    
-    w = 10;
+    vx = -random(speed-.7, speed+.7) * dir * cos(rotation);
+    vy = -random(speed-.7, speed+.7) * dir * sin(rotation);
+
+    w = 15;
   }
 
   void show()
   {
     noStroke();
-    fill(#FF0000, 100);
-    circle(x+vx, y+vy, w);
+    if (boostTimer < 20)
+    {
+      fill(#C8722B, 150);
+      circle(x, y, w);
+      //circle(x+random(-10, 10), y+random(-10, 10), w);
+      //circle(x+random(-10, 10), y+random(-10, 10), w);
+    } else fill(#505050, 100);
+    {
+      circle(x, y, w);
+    }
   }
-
   void act()
   {
     x += vx;
     y += vy;
-    w+=0.5;
+    w+=0;//.5;
     boostTimer++;
   }
 }

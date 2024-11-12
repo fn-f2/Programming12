@@ -1,15 +1,13 @@
 import fisica.*;
 
 //palette
-color blue   = color(29, 178, 242);
-color brown  = color(166, 120, 24);
-color green  = color(74, 163, 57);
-color red    = color(224, 80, 61);
-color yellow = color(242, 215, 16);
+color blue = #0367FD;
+color orange = #FD7507;
 
 //assets
-
 PVector location;
+
+int score1, score2 = 0;
 
 //mouse
 boolean mouseReleased;
@@ -30,7 +28,6 @@ boolean downkey;
 boolean rightkey;
 
 //buttons
-
 ArrayList<Car> myCars;
 
 Car car1;
@@ -47,8 +44,9 @@ FWorld world;
 void setup() {
   //make window
   fullScreen();
-  //load resources
-
+  
+  rectMode(CENTER);
+  
   //initialise world
   makeWorld();
 
@@ -59,10 +57,10 @@ void setup() {
 
   myCars = new ArrayList();
 
-  car1 = new Car(ground, ball, 200, #0367FD);
+  car1 = new Car(ground, ball, 200, blue);
   myCars.add(car1);
 
-  car2 = new Car(ground, ball, width-200, #FE9900);
+  car2 = new Car(ground, ball, width-200, orange);
   myCars.add(car2);
 }
 
@@ -115,16 +113,16 @@ void drawWalls()
 
   //right goal
   wall.vertex(width-50, height/2+110);
-  wall.vertex(width+90, height/2+110);
-  wall.vertex(width+90, height/2-140);
+  wall.vertex(width+110, height/2+110);
+  wall.vertex(width+110, height/2-140);
   wall.vertex(width-50, height/2-140);
   wall.vertex(width-50, 0);
 
   //left goal
   wall.vertex(50, 0);
   wall.vertex(50, height/2-140);
-  wall.vertex(-90, height/2-140);
-  wall.vertex(-90, height/2+110);
+  wall.vertex(-110, height/2-140);
+  wall.vertex(-110, height/2+110);
   wall.vertex(50, height/2+110);
 
   //left curve
@@ -159,25 +157,40 @@ void draw() {
   if (ball.getX() > width+40)
   {
     ball.setVelocity(0, 0);
-    ball.setPosition(width/2, height/2);
+    ball.setPosition(width/2, height*0.9);
+    score1++;
+    for (int i = 0; i < myCars.size(); i++) myCars.get(i).reset();
   }
 
   if (ball.getX() < -40)
   {
     ball.setVelocity(0, 0);
-    ball.setPosition(width/2, height/2);
+    ball.setPosition(width/2, height*0.9);
+    score2++;
+    for (int i = 0; i < myCars.size(); i++) myCars.get(i).reset();
   }
 
   fill(#000000);
   text(car1.hitBox.getX(), width/2, height/2, 100);
+  
+  //scoreboard
+  fill(0, 180);
+  rect(width/2, 30, 200, 60);
+  fill(blue);
+  rect(width/2-120, 30, 60, 60);
+  fill(#ffffff);
+  text(score1, width/2-120, 30, 10);
+  
+  fill(orange);
+  rect(width/2+120, 30, 60, 60);
 }
 
 
 //===========================================================================================
 
 void drawBall() {
-  ball = new FCircle(80);
-  ball.setPosition(width/2, height/2);
+  ball = new FCircle(100);
+  ball.setPosition(width/2, height*0.87);
 
   //set visuals
   ball.setStroke(0);
