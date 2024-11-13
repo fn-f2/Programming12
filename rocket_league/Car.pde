@@ -63,12 +63,19 @@ class Car
     rotate(hitBox.getRotation());
     noStroke();
     rectMode(CENTER);
+    fill(#202020);
+    quad(-27*xDir, 0, -37*xDir, -10, -44*xDir, -10, -37*xDir, 0);
     fill(teamCol);
-    triangle(40*xDir, 20, 0, 20, 0, 0);
+    quad(45*xDir, 10, 40*xDir, 19,  20*xDir, 19, 20*xDir, -1);
     fill(#000000);
-    triangle(20*xDir, 0, 0, 0, 0, -20);
+    triangle(20*xDir, 0, 0, 0, 0, -19);
     fill(teamCol);
-    rect(-30*xDir, 0, 20, 10);
+    rect(-10*xDir, -1, 21, 35);
+    rect(10*xDir, 8, 21, 17.5);
+    quad(-40*xDir, 0, -40*xDir, 20,  -20*xDir, 20, -20*xDir, -10);
+    //fill(#505050);
+    //rect(-40*xDir, -11, 20, 10);
+    triangle(-47*xDir, -8, -47*xDir, -22, -28*xDir, -8);
     fill(0);
     circle(+25, 15, 20);
     circle(-25, 15, 20);
@@ -182,7 +189,9 @@ class Car
   
   void reset()
   {
+    hitBox.setRotation(0);
     hitBox.setPosition(startX, startY);
+    hitBox.setVelocity(0, 0);
     if (startX < ball.getX()) xDir = 1;
     else xDir = -1;
   }

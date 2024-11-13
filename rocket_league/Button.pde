@@ -22,6 +22,7 @@ class Button
   {
     rectMode(CENTER);
     textAlign(CENTER, CENTER);
+    noStroke();
     if (checkMouseWithin(x, y, w, h)) fill(high);
     else fill(norm);
     rect(x, y, w, h, 16);

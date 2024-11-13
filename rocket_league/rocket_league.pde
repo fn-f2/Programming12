@@ -1,5 +1,12 @@
 import fisica.*;
 
+//MODE VARIABLES
+int mode;
+final int INTRO = 0;
+final int GAME = 1;
+final int PAUSE = 2;
+final int GAMEOVER = 3;
+
 //palette
 color blue = #0367FD;
 color orange = #FD7507;
@@ -8,6 +15,7 @@ color orange = #FD7507;
 PVector location;
 
 int score1, score2 = 0;
+int timer = 0;
 
 //mouse
 boolean mouseReleased;
@@ -30,6 +38,8 @@ boolean rightkey;
 //buttons
 ArrayList<Car> myCars;
 
+Button playBtn;
+
 Car car1;
 Car car2;
 
@@ -44,9 +54,10 @@ FWorld world;
 void setup() {
   //make window
   fullScreen();
-  
+
   rectMode(CENTER);
-  
+  textAlign(CENTER, CENTER);
+
   //initialise world
   makeWorld();
 
@@ -55,6 +66,8 @@ void setup() {
   drawGround();
   drawBall();
 
+  playBtn = new Button("PLAY", width/2, height*0.7, 300, 100, #ffffff, #000000);
+
   myCars = new ArrayList();
 
   car1 = new Car(ground, ball, 200, blue);
@@ -62,6 +75,8 @@ void setup() {
 
   car2 = new Car(ground, ball, width-200, orange);
   myCars.add(car2);
+
+  mode = INTRO;
 }
 
 //===========================================================================================
@@ -144,45 +159,26 @@ void drawWalls()
 
 //===========================================================================================
 
-void draw() {
-  background(#AED3E0);
-
-  world.step();  //get box2D to calculate all the forces and new positions
-  world.draw();  //ask box2D to convert this world to processing screen coordinates and draw
-
-  drawCars();
-
-
-  //detect goals
-  if (ball.getX() > width+40)
+void draw()
+{
+  switch (mode)
   {
-    ball.setVelocity(0, 0);
-    ball.setPosition(width/2, height*0.9);
-    score1++;
-    for (int i = 0; i < myCars.size(); i++) myCars.get(i).reset();
+  case INTRO:
+    intro();
+    break;
+  case GAME:
+    game();
+    break;
+  case PAUSE:
+    pause();
+    break;
+  case GAMEOVER:
+    gameover();
+    break;
+  default:
+    println("ERROR: Mode = " + mode);
+    break;
   }
-
-  if (ball.getX() < -40)
-  {
-    ball.setVelocity(0, 0);
-    ball.setPosition(width/2, height*0.9);
-    score2++;
-    for (int i = 0; i < myCars.size(); i++) myCars.get(i).reset();
-  }
-
-  fill(#000000);
-  text(car1.hitBox.getX(), width/2, height/2, 100);
-  
-  //scoreboard
-  fill(0, 180);
-  rect(width/2, 30, 200, 60);
-  fill(blue);
-  rect(width/2-120, 30, 60, 60);
-  fill(#ffffff);
-  text(score1, width/2-120, 30, 10);
-  
-  fill(orange);
-  rect(width/2+120, 30, 60, 60);
 }
 
 
@@ -199,7 +195,7 @@ void drawBall() {
 
   //set physical properties
   ball.setDensity(0.1);
-  ball.setFriction(0);
+  ball.setFriction(1);
   ball.setRestitution(1);
   ball.setGrabbable(false);
 
