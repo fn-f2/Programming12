@@ -8,11 +8,12 @@ class Car
 
   boolean isGrounded;
   boolean canJump = true;
+  boolean hasSetDir;
 
   boolean up, down, left, right;
 
   color teamCol;
-  
+
   ArrayList<Boost> myBoost;
 
   FPoly hitBox;
@@ -22,7 +23,7 @@ class Car
   {
     ground = grnd;
     startX = strtX;
-    startY = int(height*0.9);
+    startY = int(height*0.9+19.5);
     teamCol = col;
 
     myBoost = new ArrayList();
@@ -52,7 +53,7 @@ class Car
     hitBox.setFill(0, 0);
 
     world.add(hitBox);
-    
+
     hitBox.setPosition(startX, startY);
   }
 
@@ -66,19 +67,25 @@ class Car
     fill(#202020);
     quad(-27*xDir, 0, -37*xDir, -10, -44*xDir, -10, -37*xDir, 0);
     fill(teamCol);
-    quad(45*xDir, 10, 40*xDir, 19,  20*xDir, 19, 20*xDir, -1);
+    quad(45*xDir, 10, 40*xDir, 19, 20*xDir, 19, 20*xDir, -1);
     fill(#000000);
     triangle(20*xDir, 0, 0, 0, 0, -19);
     fill(teamCol);
     rect(-10*xDir, -1, 21, 35);
     rect(10*xDir, 8, 21, 17.5);
-    quad(-40*xDir, 0, -40*xDir, 20,  -20*xDir, 20, -20*xDir, -10);
+    quad(-40*xDir, 0, -40*xDir, 20, -20*xDir, 20, -20*xDir, -10);
     //fill(#505050);
     //rect(-40*xDir, -11, 20, 10);
     triangle(-47*xDir, -8, -47*xDir, -22, -28*xDir, -8);
     fill(0);
-    circle(+25, 15, 20);
+    circle(25, 15, 20);
     circle(-25, 15, 20);
+    stroke(#505050);
+    strokeWeight(5);
+    strokeCap(SQUARE);
+    arc(25, 15, 20, 20, -PI, 0);
+    arc(-25, 15, 20, 20, -PI, 0);
+    noStroke();
     popMatrix();
   }
 
@@ -103,7 +110,7 @@ class Car
 
       canJump = false;
     }
-    
+
     if (jumps < 0) jumps = 0;
 
 
@@ -142,6 +149,14 @@ class Car
 
     if (isGrounded)
     {
+      if (!hasSetDir)
+      {
+        if (abs(degrees(hitBox.getRotation())%360) > 360) xDir = -1;
+        else xDir = 1;
+        hitBox.setPosition(hitBox.getX(), startY);
+        hasSetDir = true;
+      }
+      hitBox.setRotation(0);
       hitBox.setAngularVelocity(0);
 
       jumps = 2;
@@ -151,8 +166,8 @@ class Car
       {
         hitBox.addForce(0, 30000);
       }
-    }
-    
+    } else hasSetDir = false;
+
     //boost ======================================================================
     for (int i = 0; i < myBoost.size(); i++)
     {
@@ -186,7 +201,7 @@ class Car
     left = l;
     right = r;
   }
-  
+
   void reset()
   {
     hitBox.setRotation(0);

@@ -1,5 +1,6 @@
 void intro()
 {
+  click();
   textAlign(CENTER, CENTER);
   background(#AED3E0);
   fill(#ffffff);
