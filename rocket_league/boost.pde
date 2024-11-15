@@ -24,8 +24,6 @@ class Boost
     {
       fill(#C8722B, 150);
       circle(x, y, w);
-      //circle(x+random(-10, 10), y+random(-10, 10), w);
-      //circle(x+random(-10, 10), y+random(-10, 10), w);
     } else fill(#505050, 100);
     {
       circle(x, y, w);

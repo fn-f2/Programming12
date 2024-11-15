@@ -151,9 +151,10 @@ class Car
     {
       if (!hasSetDir)
       {
-        if (abs(degrees(hitBox.getRotation())%360) > 360) xDir = -1;
-        else xDir = 1;
-        hitBox.setPosition(hitBox.getX(), startY);
+        if ((abs(degrees(hitBox.getRotation())%360) < 90 && xDir == 1) ||
+          (abs(degrees(hitBox.getRotation())%360) > 90) && xDir == -1) xDir = 1;
+        else xDir = -1;
+        hitBox.addForce(0, 1000);
         hasSetDir = true;
       }
       hitBox.setRotation(0);
@@ -161,11 +162,7 @@ class Car
 
       jumps = 2;
 
-      //if car rightside up
-      if (abs(degrees(hitBox.getRotation())%360) > 330 || abs(degrees(hitBox.getRotation())%360) < 60)
-      {
-        hitBox.addForce(0, 30000);
-      }
+      hitBox.addForce(0, 30000);
     } else hasSetDir = false;
 
     //boost ======================================================================

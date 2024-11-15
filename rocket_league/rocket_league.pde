@@ -35,6 +35,9 @@ boolean leftkey;
 boolean downkey;
 boolean rightkey;
 
+boolean gameover;
+int endtimer;
+
 //buttons
 ArrayList<Car> myCars;
 
@@ -66,7 +69,7 @@ void setup() {
   drawGround();
   drawBall();
 
-  playBtn = new Button("PLAY", width/2, height*0.7, 300, 100, #ffffff, #000000);
+  playBtn = new Button("P L A Y", width/2, height*0.7, 300, 100, #ffffff, #000000);
 
   myCars = new ArrayList();
 
@@ -75,6 +78,9 @@ void setup() {
 
   car2 = new Car(ground, ball, width-200, orange);
   myCars.add(car2);
+
+  gameover = false;
+  endtimer = 0;
 
   mode = INTRO;
 }
