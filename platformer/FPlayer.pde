@@ -11,17 +11,14 @@ class FPlayer extends FBox
 
   void act()
   {
-    float vy = getVelocityY();
-    if (akey) setVelocity(-100, vy);
-    if (dkey) setVelocity(100, vy);
-    if (getVelocityX() > 180) setVelocity(150, vy);
-    if (getVelocityX() < -180) setVelocity(-150, vy);
+    float vy = sqrt(sq(getVelocityY())+sq(getVelocityX()));
+    if (akey) setVelocity(-150*cos(-maprotation), -150*sin(-maprotation));
+    if (dkey) setVelocity(150*cos(-maprotation), 150*sin(-maprotation));
 
-    float vx = getVelocityX();
-    if (wkey && hitGround()) setVelocity(vx, -400);
+    if (wkey && hitGround()) setVelocity(vy*sin(maprotation), vy*cos(-maprotation));
 
     setAngularVelocity(0);
-    setRotation(maprotation);
+    setRotation(-maprotation);
   }
 
   boolean hitGround()
@@ -30,8 +27,8 @@ class FPlayer extends FBox
     for (int i = 0; i < contactList.size(); i++)
     {
       FContact myContact = contactList.get(i);
-      if (myContact.contains("ice")) return true;
       if (myContact.contains("ground")) return true;
+      if (myContact.contains("ice")) return true;
       if (myContact.contains("trampoline")) return true;
     }
     return false;

@@ -10,9 +10,10 @@ color green = #22b14c;
 
 PImage map, ice;
 int gridSize = 18;
+int rotationdir = 1;
 
 float maprotation = 0;
-float zoom = 2;
+float zoom = 1;
 
 //mouse
 boolean mouseReleased, wasPressed;
@@ -45,6 +46,7 @@ void setup()
 
   map = loadImage("map.png");
   ice = loadImage("blueBlock.png");
+  ice.resize(gridSize, gridSize);
   loadWorld(map);
   loadPlayer();
 }
@@ -59,12 +61,12 @@ void draw()
 void drawWorld()
 {
   pushMatrix();
-  translate(-player.getX()*zoom+width/2, -player.getY()*zoom+height*0.7);
-  if (qkey) maprotation += radians(0);
-  if (ekey) maprotation -= radians(0);
+  if (qkey) maprotation += radians(2);
+  if (ekey) maprotation -= radians(2);
   world.setGravity(900*sin(maprotation), 900*cos(maprotation));
-  rotate(maprotation);
   scale(zoom);
+  rotate(maprotation);
+  translate(-player.getX()*zoom+cos(-maprotation)*width/2, -player.getY()*zoom+sin(-maprotation)*height*0.7);
   world.step();
   world.draw();
   popMatrix();
