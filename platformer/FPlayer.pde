@@ -1,5 +1,7 @@
 class FPlayer extends FBox
 {
+  int jumpPower;
+
   FPlayer()
   {
     super(gridSize, gridSize);
@@ -7,18 +9,19 @@ class FPlayer extends FBox
     setFillColor(#ff0000);
     setNoStroke();
     setRestitution(0);
+
+    jumpPower = 200;
   }
 
   void act()
   {
-    float vy = sqrt(sq(getVelocityY())+sq(getVelocityX()));
-    if (akey) setVelocity(-150*cos(-maprotation), -150*sin(-maprotation));
-    if (dkey) setVelocity(150*cos(-maprotation), 150*sin(-maprotation));
+    float vy = getVelocityY();
+    if (akey) left(vy);
+    if (dkey) right(vy);
 
-    if (wkey && hitGround()) setVelocity(vy*sin(maprotation), vy*cos(-maprotation));
-
+    if (wkey && hitGround()) jump();
     setAngularVelocity(0);
-    setRotation(-maprotation);
+    setRotation(0);
   }
 
   boolean hitGround()
@@ -32,5 +35,29 @@ class FPlayer extends FBox
       if (myContact.contains("trampoline")) return true;
     }
     return false;
+  }
+
+  void jump()
+  {
+    if (maprotation==1) adjustVelocity(0, -jumpPower);
+    else if (maprotation==2) adjustVelocity(jumpPower, 0);
+    else if (maprotation==3) adjustVelocity(0, jumpPower);
+    else if (maprotation==4) adjustVelocity(-jumpPower, 0);
+  }
+
+  void left(float vy)
+  {
+    if (maprotation==1) setVelocity(-150, vy);
+    else if (maprotation==2) setVelocity(jumpPower, 0);
+    else if (maprotation==3) setVelocity(0, jumpPower);
+    else if (maprotation==4) setVelocity(-jumpPower, 0);
+  }
+
+  void right(float vy)
+  {
+    if (maprotation==1) setVelocity(150, vy);
+    else if (maprotation==2) setVelocity(jumpPower, 0);
+    else if (maprotation==3) setVelocity(0, jumpPower);
+    else if (maprotation==4) setVelocity(-jumpPower, 0);
   }
 }
