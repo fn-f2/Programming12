@@ -5,11 +5,10 @@ color black = #000000;
 color grey = #464646;
 color white = #ffffff;
 color cyan = #00b7ef;
-color lime = #a8e61d;
-color green = #22b14c;
+color purple = #c60dd3;
+color green = #a8e61d;
 color brown = #9c5a3c;
-
-PImage map, ice, wood;
+PImage map, ice, treetrunk, treetopc, treetope, treetopw, treetopi;
 int gridSize = 18;
 int maprotation = 1;
 float zoom = 1;
@@ -47,8 +46,17 @@ void setup()
 
   map = loadImage("map.png");
   ice = loadImage("blueBlock.png");
-  wood = loadImage("tree_trunk.png");
   ice.resize(gridSize, gridSize);
+  treetrunk = loadImage("tree_trunk.png");
+  treetrunk.resize(gridSize, gridSize);
+  treetopc = loadImage("treetop_center.png");
+  treetopc.resize(gridSize, gridSize);
+  treetope = loadImage("treetop_e.png");
+  treetope.resize(gridSize, gridSize);
+  treetopw = loadImage("treetop_w.png");
+  treetopw.resize(gridSize, gridSize);
+  treetopi = loadImage("tree_intersect.png");
+  treetopi.resize(gridSize, gridSize);
   loadWorld(map);
   loadPlayer();
 }
@@ -93,58 +101,49 @@ void loadWorld(PImage img)
       color s = img.get(x, y+1); //color below current pixel
       color w = img.get(x-1, y); // color west of current pixel
       color e = img.get(x+1, y); // color east of current pixel
-
-      if (c == black)
+      //if (c == black || c == cyan || c == grey || c == green || c == brown)
+      if (c!=color (0, 0))
       {
         FBox b = new FBox(gridSize+1, gridSize+1);
-        b.setFillColor(black);
-        b.setNoStroke();
         b.setPosition(x*gridSize, y*gridSize);
         b.setStatic(true);
-        b.setFriction(3);
-        b.setName("ground");
-        world.add(b);
-      } else if (c == cyan)
-      {
-        FBox b = new FBox(gridSize+1, gridSize+1);
-        b.attachImage(ice);
         b.setNoStroke();
-        b.setPosition(x*gridSize, y*gridSize);
-        b.setStatic(true);
-        b.setFriction(0);
-        b.setName("ice");
-        world.add(b);
-      } else if (c == grey)
-      {
-        FBox b = new FBox(gridSize+1, gridSize+1);
-        b.setFillColor(grey);
-        b.setNoStroke();
-        b.setPosition(x*gridSize, y*gridSize);
-        b.setStatic(true);
-        b.setRestitution(1);
-        b.setFriction(0.5);
-        b.setName("trampoline");
-        world.add(b);
-      } else if (c == brown)
-      {
-        FBox b = new FBox(gridSize+1, gridSize+1);
-        b.attachImage(wood);
-        b.setNoStroke();
-        b.setPosition(x*gridSize, y*gridSize);
-        b.setStatic(true);
-        b.setFriction(0.5);
-        b.setName("treetrunk");
-        world.add(b);
-      }
-      if (c == green)
-      {
-        FBox b = new FBox(gridSize+1, gridSize+1);
-        if (s != green) b.attachImage(wood);
-        b.setNoStroke();
-        b.setPosition(x*gridSize, y*gridSize);
-        b.setStatic(true);
-        b.setFriction(0.5);
-        b.setName("treetop");
+        if (c == black)
+        {
+          b.setFillColor(black);
+          b.setFriction(3);
+          b.setName("ground");
+        } else if (c == cyan)
+        {
+          b.attachImage(ice);
+          b.setFriction(0);
+          b.setName("ice");
+        } else if (c == grey)
+        {
+          b.setRestitution(1);
+          b.setFriction(0.5);
+          b.setFillColor(grey);
+          b.setName("trampoline");
+        } else if (c == brown)
+        {
+          b.attachImage(treetrunk);
+          b.setFriction(0.5);
+          b.setSensor(true);
+          b.setName("treetrunk");
+        }
+        if (c == green)
+        {
+          if (e == green && w == green && s != brown) b.attachImage(treetopc);
+          else if (e != green && w == green) b.attachImage(treetope);
+          else if (e == green && w != green) b.attachImage(treetopw);
+          else if (e == green && w == green && s == brown) b.attachImage(treetopi);
+          b.setNoStroke();
+          b.setFriction(0.5);
+          b.setName("treetop");
+        } else if (c == purple)
+        {
+        
+        }
         world.add(b);
       }
     }
