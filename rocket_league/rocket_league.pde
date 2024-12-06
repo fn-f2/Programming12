@@ -57,6 +57,7 @@ FWorld world;
 void setup() {
   //make window
   fullScreen();
+  //size(600, 900);
 
   rectMode(CENTER);
   textAlign(CENTER, CENTER);

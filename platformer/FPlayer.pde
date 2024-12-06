@@ -10,7 +10,7 @@ class FPlayer extends FBox
     setNoStroke();
     setRestitution(0);
 
-    jumpPower = 200;
+    jumpPower = 20;
   }
 
   void act()
@@ -19,22 +19,21 @@ class FPlayer extends FBox
     if (akey) left(vy);
     if (dkey) right(vy);
 
-    if (wkey && hitGround()) jump();
+    if (wkey) jump();
     setAngularVelocity(0);
     setRotation(0);
+    
+    checkCollisions();
   }
 
-  boolean hitGround()
+  void checkCollisions()
   {
     ArrayList<FContact> contactList = getContacts();
     for (int i = 0; i < contactList.size(); i++)
     {
       FContact myContact = contactList.get(i);
-      if (myContact.contains("ground")) return true;
-      if (myContact.contains("ice")) return true;
-      if (myContact.contains("trampoline")) return true;
+      if (myContact.contains("spike")) setPosition(0, 0);
     }
-    return false;
   }
 
   void jump()

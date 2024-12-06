@@ -9,14 +9,16 @@ void click()
     wasPressed = false;
   }
 }
-//void wkeyCheck()
-//{
-//  wkeyReleased = false;
-//  if (wkey)
-//    wkeyWasPressed = true;
-//  if (wkeyWasPressed && !wkey)
-//  {
-//    wkeyReleased =  true;
-//    wkeyWasPressed = false;
-//  }
-//}
+
+void fullReset()
+{
+  score1 = 0;
+  score2 = 0;
+  endtimer = 0;
+  gameover = false;
+  for (int i = 0; i < myCars.size(); i++)
+  {
+    myCars.get(i).reset();
+  }
+  ball.setPosition(width/2, height*0.87);
+}

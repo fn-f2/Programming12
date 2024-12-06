@@ -200,7 +200,13 @@ class Car
   }
 
   void reset()
-  {
+  {    
+    //delete boost
+    for (int i = 0; i < myBoost.size(); i++)
+    {
+      myBoost.remove(i);
+    }
+    
     hitBox.setRotation(0);
     hitBox.setPosition(startX, startY);
     hitBox.setVelocity(0, 0);

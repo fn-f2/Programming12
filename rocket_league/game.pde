@@ -115,4 +115,5 @@ void game()
 
 void gameClick()
 {
+  mode = PAUSE;
 }

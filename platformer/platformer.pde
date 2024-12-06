@@ -8,10 +8,11 @@ color cyan = #00b7ef;
 color purple = #c60dd3;
 color green = #a8e61d;
 color brown = #9c5a3c;
-PImage map, ice, treetrunk, treetopc, treetope, treetopw, treetopi;
+color darkbrown = #502713;
+PImage map, ice, treetrunk, treetopc, treetope, treetopw, treetopi, stone, spike, bridge;
 int gridSize = 18;
 int maprotation = 1;
-float zoom = 1;
+float zoom = 1.5;
 
 //mouse
 boolean mouseReleased, wasPressed;
@@ -29,6 +30,8 @@ boolean upkey;
 boolean leftkey;
 boolean downkey;
 boolean rightkey;
+
+boolean isgrounded;
 
 boolean rotating;
 
@@ -57,6 +60,10 @@ void setup()
   treetopw.resize(gridSize, gridSize);
   treetopi = loadImage("tree_intersect.png");
   treetopi.resize(gridSize, gridSize);
+  spike = loadImage("spike.png");
+  spike.resize(gridSize, gridSize);
+  stone = loadImage("brick.png");
+  stone.resize(gridSize, gridSize);
   loadWorld(map);
   loadPlayer();
 }
@@ -74,9 +81,9 @@ void drawWorld()
   if (qkey) maprotation += radians(2);
   if (ekey) maprotation -= radians(2);
   world.setGravity(0, 900);
-  scale(zoom);
   //rotate(maprotation);
   translate(-player.getX()*zoom+width/2, -player.getY()*zoom+height*.7);
+  scale(zoom);
   world.step();
   world.draw();
   popMatrix();
@@ -110,9 +117,9 @@ void loadWorld(PImage img)
         b.setNoStroke();
         if (c == black)
         {
-          b.setFillColor(black);
+          b.attachImage(stone);
           b.setFriction(3);
-          b.setName("ground");
+          b.setName("stone");
         } else if (c == cyan)
         {
           b.attachImage(ice);
@@ -137,12 +144,12 @@ void loadWorld(PImage img)
           else if (e != green && w == green) b.attachImage(treetope);
           else if (e == green && w != green) b.attachImage(treetopw);
           else if (e == green && w == green && s == brown) b.attachImage(treetopi);
-          b.setNoStroke();
           b.setFriction(0.5);
           b.setName("treetop");
         } else if (c == purple)
         {
-        
+          b.attachImage(spike);
+          b.setName("spike");
         }
         world.add(b);
       }
