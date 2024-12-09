@@ -1,39 +1,32 @@
-class FPlayer extends FBox
+class FPlayer extends FGameObject
 {
   int jumpPower;
 
   FPlayer()
   {
-    super(gridSize, gridSize);
+    super();
     setPosition(300, 200);
     setFillColor(#ff0000);
     setNoStroke();
     setRestitution(0);
-
+    setName("player");
     jumpPower = 20;
   }
 
   void act()
+  {
+    handleInput();
+    setAngularVelocity(0);
+    setRotation(0);
+  }
+
+  void handleInput()
   {
     float vy = getVelocityY();
     if (akey) left(vy);
     if (dkey) right(vy);
 
     if (wkey) jump();
-    setAngularVelocity(0);
-    setRotation(0);
-    
-    checkCollisions();
-  }
-
-  void checkCollisions()
-  {
-    ArrayList<FContact> contactList = getContacts();
-    for (int i = 0; i < contactList.size(); i++)
-    {
-      FContact myContact = contactList.get(i);
-      if (myContact.contains("spike")) setPosition(0, 0);
-    }
   }
 
   void jump()

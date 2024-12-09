@@ -1,6 +1,6 @@
-class FBridge extends FBox
+class FBridge extends FBox 
 {
-  FBridge(float x, float y)
+  FBridge(float x, float y) 
   {
     super(gridSize, gridSize);
     setPosition(x, y);

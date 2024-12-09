@@ -64,6 +64,8 @@ void setup()
   spike.resize(gridSize, gridSize);
   stone = loadImage("brick.png");
   stone.resize(gridSize, gridSize);
+  bridge = loadImage("bridge_center.png");
+  bridge.resize(gridSize, gridSize);
   loadWorld(map);
   loadPlayer();
 }
@@ -150,6 +152,10 @@ void loadWorld(PImage img)
         {
           b.attachImage(spike);
           b.setName("spike");
+        } else if (c == darkbrown)
+        {
+          b.attachImage(bridge);
+          b.setName("bridge");
         }
         world.add(b);
       }
