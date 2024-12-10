@@ -116,29 +116,34 @@ void loadWorld(PImage img)
         FBox b = new FBox(gridSize+1, gridSize+1);
         b.setPosition(x*gridSize, y*gridSize);
         b.setStatic(true);
+        world.add(b);
         b.setNoStroke();
         if (c == black)
         {
           b.attachImage(stone);
           b.setFriction(3);
           b.setName("stone");
+          world.add(b);
         } else if (c == cyan)
         {
           b.attachImage(ice);
           b.setFriction(0);
           b.setName("ice");
+          world.add(b);
         } else if (c == grey)
         {
           b.setRestitution(1);
           b.setFriction(0.5);
           b.setFillColor(grey);
           b.setName("trampoline");
+          world.add(b);
         } else if (c == brown)
         {
           b.attachImage(treetrunk);
           b.setFriction(0.5);
           b.setSensor(true);
           b.setName("treetrunk");
+          world.add(b);
         }
         if (c == green)
         {
@@ -148,16 +153,17 @@ void loadWorld(PImage img)
           else if (e == green && w == green && s == brown) b.attachImage(treetopi);
           b.setFriction(0.5);
           b.setName("treetop");
+          world.add(b);
         } else if (c == purple)
         {
           b.attachImage(spike);
           b.setName("spike");
+          world.add(b);
         } else if (c == darkbrown)
         {
-          b.attachImage(bridge);
-          b.setName("bridge");
+          FBridge br = new FBridge(x*gridSize, y*gridSize);
+          world.add(br);
         }
-        world.add(b);
       }
     }
   }

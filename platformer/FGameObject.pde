@@ -10,13 +10,14 @@ class FGameObject extends FBox
     
   }
 
-  void isTouching(String n)
+  boolean isTouching(String n)
   {
-    ArrayList<FContact> contactList = getContacts();
-    for (int i = 0; i < contactList.size(); i++)
+    ArrayList<FContact> contacts = getContacts();
+    for (int i = 0; i < contacts.size(); i++)
     {
-      FContact myContact = contactList.get(i);
-      if (myContact.contains(n)) setPosition(0, 0);
+      FContact fc = contacts.get(i);
+      if (fc.contains(n)) return true;
     }
+    return false;
   }
 }

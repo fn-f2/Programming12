@@ -1,9 +1,10 @@
-class FBridge extends FBox 
+class FBridge extends FGameObject
 {
   FBridge(float x, float y) 
   {
-    super(gridSize, gridSize);
+    super();
     setPosition(x, y);
+    setName("bridge");
     attachImage(bridge);
     setStatic(true);
     setFriction(4);
@@ -11,11 +12,10 @@ class FBridge extends FBox
 
   void act()
   {
-    checkForCollisions();
-  }
-  
-  void checkForCollisions()
-  {
-  
+    if (isTouching("player"))
+    {
+      setStatic(false);
+      setSensor(true);
+    }
   }
 }
