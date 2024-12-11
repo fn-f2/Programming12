@@ -9,7 +9,14 @@ color purple = #c60dd3;
 color green = #a8e61d;
 color brown = #9c5a3c;
 color darkbrown = #502713;
+
+PImage[] idle;
+PImage[] jump;
+PImage[] run;
+PImage[] action;
+
 PImage map, ice, treetrunk, treetopc, treetope, treetopw, treetopi, stone, spike, bridge;
+
 int gridSize = 18;
 int maprotation = 1;
 float zoom = 1.5;
@@ -35,7 +42,9 @@ boolean isgrounded;
 
 boolean rotating;
 
+ArrayList<FGameObject> terrain;
 FPlayer player;
+
 
 //fisica
 FWorld world;
@@ -46,6 +55,8 @@ void setup()
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
   Fisica.init(this);
+
+  terrain = new ArrayList();
 
   map = loadImage("map.png");
   ice = loadImage("blueBlock.png");
@@ -74,7 +85,7 @@ void draw()
 {
   background(#ffffff);
   drawWorld();
-  player.act();
+  actWorld();
 }
 
 void drawWorld()
@@ -91,8 +102,34 @@ void drawWorld()
   popMatrix();
 }
 
+void actWorld()
+{
+  player.act();
+  for (int i = 0; i < terrain.size(); i++)
+  {
+    FGameObject t = terrain.get(i);
+    t.act();
+  }
+}
+
 void loadPlayer()
 {
+  
+  //Load Sprites
+  idle = new PImage[2];
+  idle[0] = loadImage("idle0.png");
+  idle[1] = loadImage("idle1.png");
+  
+  jump = new PImage[1];
+  jump[0] = loadImage("idle0.png");
+  
+  run = new PImage[3];
+  run[0] = loadImage("run0.png");
+  run[1] = loadImage("run1.png");
+  run[2] = loadImage("run2.png");
+  
+  action = idle;
+  
   player = new FPlayer();
   world.add(player);
 }
@@ -116,8 +153,8 @@ void loadWorld(PImage img)
         FBox b = new FBox(gridSize+1, gridSize+1);
         b.setPosition(x*gridSize, y*gridSize);
         b.setStatic(true);
-        world.add(b);
         b.setNoStroke();
+
         if (c == black)
         {
           b.attachImage(stone);
@@ -144,8 +181,7 @@ void loadWorld(PImage img)
           b.setSensor(true);
           b.setName("treetrunk");
           world.add(b);
-        }
-        if (c == green)
+        } else if (c == green)
         {
           if (e == green && w == green && s != brown) b.attachImage(treetopc);
           else if (e != green && w == green) b.attachImage(treetope);
@@ -162,6 +198,7 @@ void loadWorld(PImage img)
         } else if (c == darkbrown)
         {
           FBridge br = new FBridge(x*gridSize, y*gridSize);
+          terrain.add(br);
           world.add(br);
         }
       }
