@@ -114,22 +114,27 @@ void actWorld()
 
 void loadPlayer()
 {
-  
+
   //Load Sprites
   idle = new PImage[2];
   idle[0] = loadImage("idle0.png");
   idle[1] = loadImage("idle1.png");
-  
+for (int i = 0; i < idle.length; i++) idle[i].resize(gridSize, gridSize);
+
+
   jump = new PImage[1];
-  jump[0] = loadImage("idle0.png");
-  
+  jump[0] = loadImage("jump0.png");
+for (int i = 0; i < jump.length; i++) jump[i].resize(gridSize, gridSize);
+
   run = new PImage[3];
-  run[0] = loadImage("run0.png");
-  run[1] = loadImage("run1.png");
-  run[2] = loadImage("run2.png");
-  
+  run[0] = loadImage("runright0.png");
+  run[1] = loadImage("runright1.png");
+  run[2] = loadImage("runright2.png");
+//for (int i = 0; i < run.length; i++) run[i].resize(gridSize, gridSize);
+
+
   action = idle;
-  
+
   player = new FPlayer();
   world.add(player);
 }
