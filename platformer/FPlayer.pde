@@ -1,6 +1,6 @@
 class FPlayer extends FGameObject
 {
-  int jumpPower;
+  int jumpPower, runV;
   int frame = 0;
   int direction;
   final int L = -1;
@@ -15,7 +15,8 @@ class FPlayer extends FGameObject
     setNoStroke();
     setRestitution(0);
     setName("player");
-    jumpPower = 20;
+    jumpPower = 400;
+    runV = 150;
   }
 
   void act()
@@ -39,13 +40,15 @@ class FPlayer extends FGameObject
   void handleInput()
   {
     float vy = getVelocityY();
-    if (akey) left(vy);
-    if (dkey) right(vy);
+    float vx = getVelocityX();
+    if (akey) left(vx, vy);
+    if (dkey) right(vx, vy);
 
-    if (wkey) jump();
+    if (wkey) jump(vx);
 
     if (abs(vy) > .1) action = jump;
-    if (vy == 0) action = idle;
+
+    if (vy == 0 && vx == 0) action = idle;
   }
 
   void collisions()
@@ -57,31 +60,35 @@ class FPlayer extends FGameObject
     }
   }
 
-  void jump()
+  void jump(float vx)
   {
-    if (maprotation==1) adjustVelocity(0, -jumpPower);
-    else if (maprotation==2) adjustVelocity(jumpPower, 0);
-    else if (maprotation==3) adjustVelocity(0, jumpPower);
-    else if (maprotation==4) adjustVelocity(-jumpPower, 0);
+    
+    if (isTouching("stone") || isTouching("treetop") || isTouching ("bridge"))
+    {
+      if (maprotation==1) setVelocity(vx, -jumpPower);
+      else if (maprotation==2) setVelocity(jumpPower, vx);
+      else if (maprotation==3) setVelocity(vx, jumpPower);
+      else if (maprotation==4) setVelocity(-jumpPower, vx);
+    }
   }
 
-  void left(float vy)
+  void left(float vx, float vy)
   {
     direction = L;
     action = run;
-    if (maprotation==1) setVelocity(-150, vy);
-    else if (maprotation==2) setVelocity(jumpPower, 0);
-    else if (maprotation==3) setVelocity(0, jumpPower);
-    else if (maprotation==4) setVelocity(-jumpPower, 0);
+    if (maprotation==1) setVelocity(-runV, vy);
+    else if (maprotation==2) setVelocity(vx, -runV);
+    else if (maprotation==3) setVelocity(runV, vy);
+    else if (maprotation==4) setVelocity(vx, runV);
   }
 
-  void right(float vy)
+  void right(float vx, float vy)
   {
     direction = R;
     action = run;
-    if (maprotation==1) setVelocity(150, vy);
-    else if (maprotation==2) setVelocity(jumpPower, 0);
-    else if (maprotation==3) setVelocity(0, jumpPower);
-    else if (maprotation==4) setVelocity(-jumpPower, 0);
+    if (maprotation==1) setVelocity(runV, vy);
+    else if (maprotation==2) setVelocity(vx, runV);
+    else if (maprotation==3) setVelocity(-runV, vy);
+    else if (maprotation==4) setVelocity(vx, -runV);
   }
 }

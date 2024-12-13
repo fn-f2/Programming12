@@ -119,18 +119,18 @@ void loadPlayer()
   idle = new PImage[2];
   idle[0] = loadImage("idle0.png");
   idle[1] = loadImage("idle1.png");
-for (int i = 0; i < idle.length; i++) idle[i].resize(gridSize, gridSize);
+  for (int i = 0; i < idle.length; i++) idle[i].resize(gridSize, gridSize);
 
 
   jump = new PImage[1];
   jump[0] = loadImage("jump0.png");
-for (int i = 0; i < jump.length; i++) jump[i].resize(gridSize, gridSize);
+  for (int i = 0; i < jump.length; i++) jump[i].resize(gridSize, gridSize);
 
   run = new PImage[3];
   run[0] = loadImage("runright0.png");
   run[1] = loadImage("runright1.png");
   run[2] = loadImage("runright2.png");
-//for (int i = 0; i < run.length; i++) run[i].resize(gridSize, gridSize);
+  for (int i = 0; i < run.length; i++) run[i].resize(gridSize, gridSize);
 
 
   action = idle;
@@ -188,13 +188,14 @@ void loadWorld(PImage img)
           world.add(b);
         } else if (c == green)
         {
-          if (e == green && w == green && s != brown) b.attachImage(treetopc);
-          else if (e != green && w == green) b.attachImage(treetope);
-          else if (e == green && w != green) b.attachImage(treetopw);
-          else if (e == green && w == green && s == brown) b.attachImage(treetopi);
-          b.setFriction(0.5);
-          b.setName("treetop");
-          world.add(b);
+          PImage timg = treetopc;
+          if (e == green && w == green && s != brown) timg = treetopc;
+          else if (e != green && w == green) timg = treetope;
+          else if (e == green && w != green) timg = treetopw;
+          else if (e == green && w == green && s == brown) timg = treetopi;
+          FFloatPlat tt = new FFloatPlat(x*gridSize, y*gridSize, "treetop", timg);
+          terrain.add(tt);
+          world.add(tt);
         } else if (c == purple)
         {
           b.attachImage(spike);
