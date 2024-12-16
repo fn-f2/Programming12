@@ -9,7 +9,7 @@ class FPlayer extends FGameObject
   FPlayer()
   {
     super();
-    setPosition(300, 200);
+    setPosition(0, 0);
     setFillColor(#ff0000);
     setRotatable(false);
     setNoStroke();
@@ -21,9 +21,11 @@ class FPlayer extends FGameObject
 
   void act()
   {
+    pushMatrix();
     handleInput();
     collisions();
     animate();
+    popMatrix();
   }
 
   void animate()
@@ -53,7 +55,7 @@ class FPlayer extends FGameObject
 
   void collisions()
   {
-    if (isTouching("spike"))
+    if (onTopOf("spike"))
     {
       setPosition(0, 0);
       setVelocity(0, 0);
@@ -62,8 +64,8 @@ class FPlayer extends FGameObject
 
   void jump(float vx)
   {
-    
-    if (isTouching("stone") || isTouching("treetop") || isTouching ("bridge"))
+
+    if (onTopOf("stone") || onTopOf("treetop") || onTopOf ("bridge"))
     {
       if (maprotation==1) setVelocity(vx, -jumpPower);
       else if (maprotation==2) setVelocity(jumpPower, vx);
@@ -90,5 +92,18 @@ class FPlayer extends FGameObject
     else if (maprotation==2) setVelocity(vx, runV);
     else if (maprotation==3) setVelocity(-runV, vy);
     else if (maprotation==4) setVelocity(vx, -runV);
+  }
+
+  boolean onTopOf(String n)
+  {
+    ArrayList<FContact> contacts = getContacts();
+    for (int i = 0; i < contacts.size(); i++)
+    {
+      FContact fc = contacts.get(i);
+      if (fc.contains(n) && getY() < fc.getY()
+      /*&& getX()+gridSize/2 > fc.getX()-gridSize/2+8*/
+      /*&& getX()+gridSize/2 < fc.getX()+gridSize*1.5-8*/) return true;
+    }
+    return false;
   }
 }

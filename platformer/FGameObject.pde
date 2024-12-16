@@ -7,10 +7,9 @@ class FGameObject extends FBox
 
   void act()
   {
-    
   }
 
-  boolean isTouching(String n)
+  boolean onTopOf(String n)
   {
     ArrayList<FContact> contacts = getContacts();
     for (int i = 0; i < contacts.size(); i++)

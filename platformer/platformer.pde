@@ -19,7 +19,8 @@ PImage map, ice, treetrunk, treetopc, treetope, treetopw, treetopi, stone, spike
 
 int gridSize = 18;
 int maprotation = 1;
-float zoom = 1.5;
+float mapangle = 0;
+float zoom = 0.5;
 
 //mouse
 boolean mouseReleased, wasPressed;
@@ -93,9 +94,14 @@ void drawWorld()
   pushMatrix();
   if (qkey) maprotation += radians(2);
   if (ekey) maprotation -= radians(2);
-  world.setGravity(0, 900);
-  //rotate(maprotation);
-  translate(-player.getX()*zoom+width/2, -player.getY()*zoom+height*.7);
+  if (maprotation == 1) world.setGravity(0, 900);
+  if (maprotation == 2) world.setGravity(900, 0);
+  if (maprotation == 3) world.setGravity(0, -900);
+  if (maprotation == 4) world.setGravity(-900, 0);
+  translate((-player.getX()*zoom), (-player.getY()*zoom));
+  translate(width/2, height/2);
+  //circle(-cos(mapangle)*(-player.getX()*zoom), -sin(mapangle)*(-player.getY()*zoom), 20);
+  //rotate(mapangle);
   scale(zoom);
   world.step();
   world.draw();
@@ -104,12 +110,16 @@ void drawWorld()
 
 void actWorld()
 {
+  mapangle += radians(0.3);
+  pushMatrix();
+  fill(0);
   player.act();
   for (int i = 0; i < terrain.size(); i++)
   {
     FGameObject t = terrain.get(i);
     t.act();
   }
+  popMatrix();
 }
 
 void loadPlayer()
