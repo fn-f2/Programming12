@@ -20,7 +20,7 @@ PImage map, ice, treetrunk, treetopc, treetope, treetopw, treetopi, stone, spike
 int gridSize = 18;
 int maprotation = 1;
 float mapangle = 0;
-float zoom = 0.5;
+float zoom = 1;
 
 //mouse
 boolean mouseReleased, wasPressed;
@@ -92,16 +92,13 @@ void draw()
 void drawWorld()
 {
   pushMatrix();
-  if (qkey) maprotation += radians(2);
-  if (ekey) maprotation -= radians(2);
   if (maprotation == 1) world.setGravity(0, 900);
-  if (maprotation == 2) world.setGravity(900, 0);
+  if (maprotation == 2) world.setGravity(-900, 0);
   if (maprotation == 3) world.setGravity(0, -900);
-  if (maprotation == 4) world.setGravity(-900, 0);
-  translate((-player.getX()*zoom), (-player.getY()*zoom));
+  if (maprotation == 4) world.setGravity(900, 0);
   translate(width/2, height/2);
-  //circle(-cos(mapangle)*(-player.getX()*zoom), -sin(mapangle)*(-player.getY()*zoom), 20);
-  //rotate(mapangle);
+  rotate(mapangle);
+  translate(-player.getX()*zoom, -player.getY()*zoom);
   scale(zoom);
   world.step();
   world.draw();
@@ -110,8 +107,24 @@ void drawWorld()
 
 void actWorld()
 {
-  mapangle += radians(0.3);
+  if (qkey) maprotation = 1;
+  if (ekey) maprotation = 2;
+  //mapangle += radians(.5);
   pushMatrix();
+  if (maprotation == 1)
+  {
+    mapangle = radians(0);
+  } else if (maprotation == 2)
+  {
+    mapangle = radians(270);
+  } else if (maprotation == 3)
+  {
+    mapangle = radians(180);
+  } else if (maprotation == 4)
+  {
+    mapangle = radians(90);
+  }
+
   fill(0);
   player.act();
   for (int i = 0; i < terrain.size(); i++)

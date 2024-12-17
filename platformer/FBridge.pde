@@ -1,11 +1,12 @@
 class FBridge extends FGameObject
 {
-  
-  
-  FBridge(float x, float y) 
+  boolean hasTouched = false;
+
+  FBridge(float x, float y)
   {
     super();
     setPosition(x, y);
+    setRestitution(0);
     setName("bridge");
     attachImage(bridge);
     setStatic(true);
@@ -14,10 +15,13 @@ class FBridge extends FGameObject
 
   void act()
   {
-    if (onTopOf("player"))
+    if (isTouching("player"))
     {
-      setStatic(false);
-      setSensor(true);
+      hasTouched = true;
+    } else if (hasTouched)
+    {
+        setStatic(false);
+        setSensor(true);
     }
   }
 }

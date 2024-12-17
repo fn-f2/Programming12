@@ -9,7 +9,7 @@ class FPlayer extends FGameObject
   FPlayer()
   {
     super();
-    setPosition(0, 0);
+    setPosition(100, 100);
     setFillColor(#ff0000);
     setRotatable(false);
     setNoStroke();
