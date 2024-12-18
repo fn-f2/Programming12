@@ -30,6 +30,7 @@ class FPlayer extends FGameObject
 
   void animate()
   {
+    setRotation(-mapangle);
     if (frame >= action.length) frame = 0;
     if (frameCount % 5 == 0)
     {
@@ -46,7 +47,7 @@ class FPlayer extends FGameObject
     if (akey) left(vx, vy);
     if (dkey) right(vx, vy);
 
-    if (wkey) jump(vx);
+    if (wkey) jump(vx, vy);
 
     if (abs(vy) > .1) action = jump;
 
@@ -62,15 +63,15 @@ class FPlayer extends FGameObject
     }
   }
 
-  void jump(float vx)
+  void jump(float vx, float vy)
   {
 
     if (onTopOf("stone") || onTopOf("treetop") || onTopOf ("bridge"))
     {
-      if (maprotation==1) setVelocity(vx, -jumpPower);
-      else if (maprotation==2) setVelocity(jumpPower, vx);
-      else if (maprotation==3) setVelocity(vx, jumpPower);
-      else if (maprotation==4) setVelocity(-jumpPower, vx);
+      if (mrotation==1) setVelocity(vx, -jumpPower);
+      else if (mrotation==2) setVelocity(jumpPower, vy);
+      else if (mrotation==3) setVelocity(vx, jumpPower);
+      else if (mrotation==4) setVelocity(-jumpPower, vy);
     }
   }
 
@@ -78,20 +79,20 @@ class FPlayer extends FGameObject
   {
     direction = L;
     action = run;
-    if (maprotation==1) setVelocity(-runV, vy);
-    else if (maprotation==2) setVelocity(vx, -runV);
-    else if (maprotation==3) setVelocity(runV, vy);
-    else if (maprotation==4) setVelocity(vx, runV);
+    if (mrotation==1) setVelocity(-runV, vy);
+    else if (mrotation==2) setVelocity(vx, -runV);
+    else if (mrotation==3) setVelocity(runV, vy);
+    else if (mrotation==4) setVelocity(vx, runV);
   }
 
   void right(float vx, float vy)
   {
     direction = R;
     action = run;
-    if (maprotation==1) setVelocity(runV, vy);
-    else if (maprotation==2) setVelocity(vx, runV);
-    else if (maprotation==3) setVelocity(-runV, vy);
-    else if (maprotation==4) setVelocity(vx, -runV);
+    if (mrotation==1) setVelocity(runV, vy);
+    else if (mrotation==2) setVelocity(vx, runV);
+    else if (mrotation==3) setVelocity(-runV, vy);
+    else if (mrotation==4) setVelocity(vx, -runV);
   }
 
   boolean onTopOf(String n)

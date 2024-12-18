@@ -18,9 +18,10 @@ PImage[] action;
 PImage map, ice, treetrunk, treetopc, treetope, treetopw, treetopi, stone, spike, bridge;
 
 int gridSize = 18;
-int maprotation = 1;
+int mrotation = 1;
+int prevmrotation;
 float mapangle = 0;
-float zoom = 1;
+float zoom = 1.5;
 
 //mouse
 boolean mouseReleased, wasPressed;
@@ -32,6 +33,11 @@ boolean skey;
 boolean dkey;
 boolean qkey;
 boolean ekey;
+
+boolean qReleased;
+boolean eReleased;
+boolean qWasPressed;
+boolean eWasPressed;
 
 
 boolean upkey;
@@ -87,15 +93,18 @@ void draw()
   background(#ffffff);
   drawWorld();
   actWorld();
+  qePress();
 }
 
 void drawWorld()
 {
+  if (mapangle > radians(358)) mapangle = 0;
+  if (mapangle < 0) mapangle = radians(358);
   pushMatrix();
-  if (maprotation == 1) world.setGravity(0, 900);
-  if (maprotation == 2) world.setGravity(-900, 0);
-  if (maprotation == 3) world.setGravity(0, -900);
-  if (maprotation == 4) world.setGravity(900, 0);
+  if (mrotation == 1) world.setGravity(0, 900);
+  if (mrotation == 2) world.setGravity(-900, 0);
+  if (mrotation == 3) world.setGravity(0, -900);
+  if (mrotation == 4) world.setGravity(900, 0);
   translate(width/2, height/2);
   rotate(mapangle);
   translate(-player.getX()*zoom, -player.getY()*zoom);
@@ -103,26 +112,56 @@ void drawWorld()
   world.step();
   world.draw();
   popMatrix();
+  textSize(20);
+  text("angle: "+round(degrees(mapangle))+" rotation: "+mrotation, width/2, height/2);
 }
 
 void actWorld()
 {
-  if (qkey) maprotation = 1;
-  if (ekey) maprotation = 2;
-  //mapangle += radians(.5);
-  pushMatrix();
-  if (maprotation == 1)
+  if (qkey)
   {
-    mapangle = radians(0);
-  } else if (maprotation == 2)
+    qkey = false;
+      prevmrotation = mrotation;
+      if (mrotation < 4) mrotation++;
+      else mrotation = 1;
+    //prevmrotation = 2;
+    //mrotation = 1;
+  }
+  if (ekey)
   {
-    mapangle = radians(270);
-  } else if (maprotation == 3)
+    ekey = false;
+    prevmrotation = mrotation;
+    if (mrotation > 1) mrotation--;
+    else mrotation = 4;
+    //prevmrotation = 1;
+    //mrotation = 2;
+  }
+
+  //MAP ROTATION=======================================================================================================
+  if (mrotation == 1) //MAP ROTATION 1
   {
-    mapangle = radians(180);
-  } else if (maprotation == 4)
+    if (mapangle != 0) //check angle
+    {
+      //if (prevmrotation == 4) mapangle -= radians(2);
+      //else if (prevmrotation == 2) mapangle += radians(2);
+      if (prevmrotation == 2) mapangle += radians(6);
+    }
+  } else if (mrotation == 2) //MAP ROTATION 2
   {
-    mapangle = radians(90);
+    if (mapangle > radians(92) || mapangle < radians(88)) //check angle
+    {
+      println(prevmrotation);
+      if (prevmrotation == 1) mapangle += radians(6);
+      else if (prevmrotation == 3) mapangle -= radians(6);
+    } else mapangle = radians(90);
+  } else if (mrotation == 2) //MAP ROTATION 3
+  {
+    if (mapangle > radians(92) || mapangle < radians(88)) //check angle
+    {
+      println(prevmrotation);
+      if (prevmrotation == 1) mapangle += radians(6);
+      else if (prevmrotation == 3) mapangle -= radians(6);
+    } else mapangle = radians(90);
   }
 
   fill(0);
@@ -132,7 +171,6 @@ void actWorld()
     FGameObject t = terrain.get(i);
     t.act();
   }
-  popMatrix();
 }
 
 void loadPlayer()
@@ -178,7 +216,7 @@ void loadWorld(PImage img)
       //if (c == black || c == cyan || c == grey || c == green || c == brown)
       if (c!=color (0, 0))
       {
-        FBox b = new FBox(gridSize+1, gridSize+1);
+        FBox b = new FBox(gridSize, gridSize);
         b.setPosition(x*gridSize, y*gridSize);
         b.setStatic(true);
         b.setNoStroke();

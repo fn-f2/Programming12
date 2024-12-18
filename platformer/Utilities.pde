@@ -10,6 +10,25 @@ void click()
   }
 }
 
+void qePress()
+{
+  qReleased = false;
+  if (qkey)
+    qWasPressed = true;
+  if (qWasPressed && !qkey)
+  {
+    qReleased =  true;
+    qWasPressed = false;
+  }
+  eReleased = false;
+  if (ekey)
+    eWasPressed = true;
+  if (eWasPressed && !ekey)
+  {
+    eReleased =  true;
+    eWasPressed = false;
+  }
+}
 PImage reverseImage( PImage image ) {
   PImage reverse;
   reverse = createImage(image.width, image.height, ARGB );
