@@ -32,7 +32,7 @@ class FPlayer extends FGameObject
   {
     setRotation(-mapangle);
     if (frame >= action.length) frame = 0;
-    if (frameCount % 5 == 0)
+    if (frameCount % 10 == 0)
     {
       if (direction == R) attachImage(action[frame]);
       if (direction == L) attachImage(reverseImage(action[frame]));

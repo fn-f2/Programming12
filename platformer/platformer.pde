@@ -21,7 +21,7 @@ int gridSize = 18;
 int mrotation = 1;
 int prevmrotation;
 float mapangle = 0;
-float zoom = 1.5;
+float zoom = 3;
 
 //mouse
 boolean mouseReleased, wasPressed;
@@ -59,6 +59,7 @@ FWorld world;
 void setup()
 {
   size(600, 600);
+  noSmooth();
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
   Fisica.init(this);
@@ -113,7 +114,7 @@ void drawWorld()
   world.draw();
   popMatrix();
   textSize(20);
-  text("angle: "+round(degrees(mapangle))+" rotation: "+mrotation, width/2, height/2);
+  //text("angle: "+round(degrees(mapangle))+" rotation: "+mrotation, width/2, height/2);
 }
 
 void actWorld()
@@ -181,9 +182,15 @@ void loadPlayer()
 {
 
   //Load Sprites
-  idle = new PImage[2];
+  idle = new PImage[8];
   idle[0] = loadImage("idle0.png");
   idle[1] = loadImage("idle1.png");
+  idle[2] = loadImage("idle2.png");
+  idle[3] = loadImage("idle3.png");
+  idle[4] = loadImage("idle4.png");
+  idle[5] = loadImage("idle5.png");
+  idle[6] = loadImage("idle6.png");
+  idle[7] = loadImage("idle7.png");
   for (int i = 0; i < idle.length; i++) idle[i].resize(gridSize, gridSize);
 
 
