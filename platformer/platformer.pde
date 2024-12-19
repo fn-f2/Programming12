@@ -102,9 +102,9 @@ void drawWorld()
   if (mapangle < 0) mapangle = radians(358);
   pushMatrix();
   if (mrotation == 1) world.setGravity(0, 900);
-  if (mrotation == 2) world.setGravity(-900, 0);
+  if (mrotation == 2) world.setGravity(900, 0);
   if (mrotation == 3) world.setGravity(0, -900);
-  if (mrotation == 4) world.setGravity(900, 0);
+  if (mrotation == 4) world.setGravity(-900, 0);
   translate(width/2, height/2);
   rotate(mapangle);
   translate(-player.getX()*zoom, -player.getY()*zoom);
@@ -121,9 +121,9 @@ void actWorld()
   if (qkey)
   {
     qkey = false;
-      prevmrotation = mrotation;
-      if (mrotation < 4) mrotation++;
-      else mrotation = 1;
+    prevmrotation = mrotation;
+    if (mrotation < 4) mrotation++;
+    else mrotation = 1;
     //prevmrotation = 2;
     //mrotation = 1;
   }
@@ -137,31 +137,35 @@ void actWorld()
     //mrotation = 2;
   }
 
-  //MAP ROTATION=======================================================================================================
+  //MAP ROTATION========================================================================================================================================
   if (mrotation == 1) //MAP ROTATION 1
   {
-    if (mapangle != 0) //check angle
+    if (mapangle > radians(2) && mapangle < radians(358)) //check angle
     {
-      //if (prevmrotation == 4) mapangle -= radians(2);
-      //else if (prevmrotation == 2) mapangle += radians(2);
-      if (prevmrotation == 2) mapangle += radians(6);
-    }
+      if (prevmrotation == 4) mapangle += radians(10);
+      else if (prevmrotation == 2) mapangle -= radians(10);
+    } else mapangle = 0;
   } else if (mrotation == 2) //MAP ROTATION 2
   {
     if (mapangle > radians(92) || mapangle < radians(88)) //check angle
     {
-      println(prevmrotation);
-      if (prevmrotation == 1) mapangle += radians(6);
-      else if (prevmrotation == 3) mapangle -= radians(6);
+      if (prevmrotation == 1) mapangle += radians(10);
+      else if (prevmrotation == 3) mapangle -= radians(10);
     } else mapangle = radians(90);
-  } else if (mrotation == 2) //MAP ROTATION 3
+  } else if (mrotation == 3) //MAP ROTATION 3
   {
-    if (mapangle > radians(92) || mapangle < radians(88)) //check angle
+    if (mapangle > radians(182) || mapangle < radians(178)) //check angle
     {
-      println(prevmrotation);
-      if (prevmrotation == 1) mapangle += radians(6);
-      else if (prevmrotation == 3) mapangle -= radians(6);
-    } else mapangle = radians(90);
+      if (prevmrotation == 2) mapangle += radians(10);
+      else if (prevmrotation == 4) mapangle -= radians(10);
+    } else mapangle = radians(180);
+  } else if (mrotation == 4) //MAP ROTATION 4
+  {
+    if (mapangle > radians(272) || mapangle < radians(268)) //check angle
+    {
+      if (prevmrotation == 3) mapangle += radians(10);
+      else if (prevmrotation == 1) mapangle -= radians(10);
+    } else mapangle = radians(270);
   }
 
   fill(0);

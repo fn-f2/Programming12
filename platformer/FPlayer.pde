@@ -49,7 +49,8 @@ class FPlayer extends FGameObject
 
     if (wkey) jump(vx, vy);
 
-    if (abs(vy) > .1) action = jump;
+    if ((mrotation == 1 || mrotation == 3) && abs(vy) > .1) action = jump;
+    else if ((mrotation == 2 || mrotation == 4) && abs(vx) > .1) action = jump;
 
     if (vy == 0 && vx == 0) action = idle;
   }
@@ -69,9 +70,9 @@ class FPlayer extends FGameObject
     if (onTopOf("stone") || onTopOf("treetop") || onTopOf ("bridge"))
     {
       if (mrotation==1) setVelocity(vx, -jumpPower);
-      else if (mrotation==2) setVelocity(jumpPower, vy);
+      else if (mrotation==2) setVelocity(-jumpPower, vy);
       else if (mrotation==3) setVelocity(vx, jumpPower);
-      else if (mrotation==4) setVelocity(-jumpPower, vy);
+      else if (mrotation==4) setVelocity(jumpPower, vy);
     }
   }
 
@@ -80,9 +81,9 @@ class FPlayer extends FGameObject
     direction = L;
     action = run;
     if (mrotation==1) setVelocity(-runV, vy);
-    else if (mrotation==2) setVelocity(vx, -runV);
+    else if (mrotation==2) setVelocity(vx, runV);
     else if (mrotation==3) setVelocity(runV, vy);
-    else if (mrotation==4) setVelocity(vx, runV);
+    else if (mrotation==4) setVelocity(vx, -runV);
   }
 
   void right(float vx, float vy)
@@ -90,9 +91,9 @@ class FPlayer extends FGameObject
     direction = R;
     action = run;
     if (mrotation==1) setVelocity(runV, vy);
-    else if (mrotation==2) setVelocity(vx, runV);
+    else if (mrotation==2) setVelocity(vx, -runV);
     else if (mrotation==3) setVelocity(-runV, vy);
-    else if (mrotation==4) setVelocity(vx, -runV);
+    else if (mrotation==4) setVelocity(vx, runV);
   }
 
   boolean onTopOf(String n)
@@ -101,9 +102,14 @@ class FPlayer extends FGameObject
     for (int i = 0; i < contacts.size(); i++)
     {
       FContact fc = contacts.get(i);
-      if (fc.contains(n) && getY() < fc.getY()
+      if (fc.contains(n))
+      {
+        return true;
+          //  if ((mrotation == 1 || mrotation == 3) && getY() > fc.getY()) return true;
+          //  else if ((mrotation == 2 || mrotation == 4) && getX() < fc.getX()) return true;
+      }
       /*&& getX()+gridSize/2 > fc.getX()-gridSize/2+8*/
-      /*&& getX()+gridSize/2 < fc.getX()+gridSize*1.5-8*/) return true;
+      /*&& getX()+gridSize/2 < fc.getX()+gridSize*1.5-8*/
     }
     return false;
   }
