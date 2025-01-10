@@ -19,6 +19,7 @@ void keyReleased()
   if (key == 'd' || key == 'D') dkey = false;
   if (key == 'q' || key == 'Q') qkey = false;
   if (key == 'e' || key == 'E') ekey = false;
+  if (key == 'c' || key == 'C') ckey = false;
   if (keyCode == SHIFT) shiftkey = false;
   if (keyCode == 32) spacekey = false;
 }
