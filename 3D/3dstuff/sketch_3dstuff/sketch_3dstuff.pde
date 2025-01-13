@@ -24,6 +24,7 @@ void setup()
   //fullScreen(P3D);
   size(600, 600, P3D);
   textureMode(NORMAL);
+  rectMode(CENTER);
   perspective();
 
   rbt = (GLWindow)surface.getNative();
@@ -46,8 +47,15 @@ void setup()
 
 void controlCamera()
 {
-  if (shiftkey) sprint = true;
-  else sprint = false;
+  if (shiftkey)
+  {
+    sprint = true;
+    if (!ckey)speed = 40;
+  } else
+  {
+    sprint = false;
+    if (!ckey) speed = 20;
+  }
 
   if (wkey)
   {
@@ -56,18 +64,18 @@ void controlCamera()
   }
   if (skey)
   {
-    eyeX -= speed*cos(LRHeadAngle);
-    eyeZ -= speed*sin(LRHeadAngle);
+    eyeX -= 10*cos(LRHeadAngle);
+    eyeZ -= 10*sin(LRHeadAngle);
   }
   if (akey)
   {
-    eyeX -= speed*cos(LRHeadAngle + PI/2);
-    eyeZ -= speed*sin(LRHeadAngle + PI/2);
+    eyeX -= 10*cos(LRHeadAngle + PI/2);
+    eyeZ -= 10*sin(LRHeadAngle + PI/2);
   }
   if (dkey)
   {
-    eyeX -= speed*cos(LRHeadAngle - PI/2);
-    eyeZ -= speed*sin(LRHeadAngle - PI/2);
+    eyeX -= 10*cos(LRHeadAngle - PI/2);
+    eyeZ -= 10*sin(LRHeadAngle - PI/2);
   }
 
   if (skipFrame == false) {
@@ -84,42 +92,54 @@ void controlCamera()
 
 void draw()
 {
-  background(0);
+  background(#ffffff);
   pushMatrix();
   if (ckey)
   {
-    speed = 20;
+    if (sprint) speed = 80;
+    else speed = 40;
     if (eyeY < height/2+100)
     {
       eyeY += 15;
     }
   } else if (eyeY > height/2) eyeY -= 15;
 
-  println(eyeY);
+  println(speed);
 
   camera(eyeX, eyeY, eyeZ, focusX, focusY, focusZ, tiltX, tiltY, tiltZ);
-  drawFloor();
+  drawFloor(1000, 50);
   drawFocalPoint();
   controlCamera();
   popMatrix();
 
   if (focused) rbt.warpPointer(width/2, height/2);
+
+  fill(0);
+  rect(width/2, height/2, 2, 20);
+  rect(width/2, height/2, 20, 2);
 }
 
-void drawFloor()
+void drawFloor(int d, int s)
 {
-  stroke(255);
-  //for (int x = -2000; x <= 2000; x += 100)
-  //{
-  //  stroke(#ffffff);
-  //  line(x, height, -2000, x, height, 2000);
-  //  line(-2000, height, x, 2000, height, x);
-  //}
-
-  for (float x = -2000; x <= 2000; x += 100)
+  for (int x = floor(eyeX/s)-floor(d/s/2); x < floor(eyeX/s)+floor(d/s/2); x++)
   {
-    stroke(#FF0000);
-    line(x, height, -2000, x, height, 2000);
+    for (int z = floor(eyeZ/s)-floor(d/s/2); z < floor(eyeZ/s)+floor(d/s/2); z++)
+    {
+      stroke(0);
+      //line(x*s, height, eyeZ-d/2, x*s, height, eyeZ+d/2);
+      //line(eyeX-d/2, height, z*s, eyeX+d/2, height, z*s);
+      if (dist(x*s, z*s, eyeX, eyeZ) < d/2)
+      {
+        fill(#262626);
+        beginShape(QUADS);
+        fill(#262626);
+        vertex(x*s-s/2, height, z*s-s/2);
+        vertex(x*s+s/2, height, z*s-s/2);
+        vertex(x*s+s/2, height, z*s+s/2);
+        vertex(x*s-s/2, height, z*s+s/2);
+        endShape();
+      }
+    }
   }
 }
 
@@ -128,6 +148,6 @@ void drawFocalPoint()
   pushMatrix();
   translate(focusX, focusY, focusZ);
   stroke(#ffffff);
-  sphere(5);
+  //sphere(5);
   popMatrix();
 }
