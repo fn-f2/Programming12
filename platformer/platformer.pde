@@ -21,7 +21,7 @@ int gridSize = 18;
 int mrotation = 1;
 int prevmrotation;
 float mapangle = 0;
-float zoom = 3;
+float zoom = 2;
 
 //mouse
 boolean mouseReleased, wasPressed;
@@ -119,23 +119,19 @@ void drawWorld()
 
 void actWorld()
 {
-  if (qkey)
-  {
-    qkey = false;
-    prevmrotation = mrotation;
-    if (mrotation < 4) mrotation++;
-    else mrotation = 1;
-    //prevmrotation = 2;
-    //mrotation = 1;
-  }
   if (ekey)
   {
     ekey = false;
     prevmrotation = mrotation;
+    if (mrotation < 4) mrotation++;
+    else mrotation = 1;
+  }
+  if (qkey)
+  {
+    qkey = false;
+    prevmrotation = mrotation;
     if (mrotation > 1) mrotation--;
     else mrotation = 4;
-    //prevmrotation = 1;
-    //mrotation = 2;
   }
 
   //MAP ROTATION========================================================================================================================================
@@ -191,7 +187,7 @@ void loadPlayer()
   idle[5] = loadImage("idle5.png");
   idle[6] = loadImage("idle6.png");
   idle[7] = loadImage("idle7.png");
-  for (int i = 0; i < idle.length; i++) idle[i].resize(gridSize, gridSize);
+  for (int i = 0; i < idle.length; i++) idle[i].resize(gridSize*2, gridSize*2);
 
 
   jump = new PImage[1];

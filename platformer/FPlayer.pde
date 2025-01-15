@@ -9,7 +9,7 @@ class FPlayer extends FGameObject
   FPlayer()
   {
     super();
-    setPosition(100, 100);
+    setPosition(100, 520);
     setFillColor(#ff0000);
     setRotatable(false);
     setNoStroke();
@@ -45,7 +45,18 @@ class FPlayer extends FGameObject
     float vy = getVelocityY();
     float vx = getVelocityX();
     if (akey) left(vx, vy);
+    else if (!dkey)
+    {
+      if (mrotation == 1 || mrotation == 3) setVelocity(0, vy);
+      else if (mrotation == 2 || mrotation == 4) setVelocity(vx, 0);
+    }
+
     if (dkey) right(vx, vy);
+    else if (!akey)
+    {
+      if (mrotation == 1 || mrotation == 3) setVelocity(0, vy);
+      else if (mrotation == 2 || mrotation == 4) setVelocity(vx, 0);
+    }
 
     if (wkey) jump(vx, vy);
 
@@ -59,9 +70,12 @@ class FPlayer extends FGameObject
   {
     if (onTopOf("spike"))
     {
-      setPosition(0, 0);
+      setPosition(100, 520);
+      mapangle = 0;
+      mrotation = 1;
       setVelocity(0, 0);
     }
+    println(mrotation);
   }
 
   void jump(float vx, float vy)
@@ -105,12 +119,19 @@ class FPlayer extends FGameObject
       if (fc.contains(n))
       {
         return true;
-          //  if ((mrotation == 1 || mrotation == 3) && getY() > fc.getY()) return true;
-          //  else if ((mrotation == 2 || mrotation == 4) && getX() < fc.getX()) return true;
+        //  if ((mrotation == 1 || mrotation == 3) && getY() > fc.getY()) return true;
+        //  else if ((mrotation == 2 || mrotation == 4) && getX() < fc.getX()) return true;
       }
       /*&& getX()+gridSize/2 > fc.getX()-gridSize/2+8*/
       /*&& getX()+gridSize/2 < fc.getX()+gridSize*1.5-8*/
     }
+    return false;
+  }
+
+  boolean isGrounded()
+  {
+    ArrayList<FContact> contacts = getContacts();
+    if (contacts.size() > 0) return true;
     return false;
   }
 }

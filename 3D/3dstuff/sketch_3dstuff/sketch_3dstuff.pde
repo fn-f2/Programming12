@@ -9,8 +9,8 @@ GLWindow rbt;
 
 boolean skipFrame;
 
-boolean sprint, crouch;
-int speed;
+boolean sprint, crouch, jump;
+float speed, jumpspeed;
 
 //keyboard
 boolean wkey, akey, skey, dkey, qkey, ekey, ckey, shiftkey, spacekey;
@@ -19,6 +19,8 @@ boolean qReleased, eReleased, qWasPressed, eWasPressed;
 float eyeX, eyeY, eyeZ, focusX, focusY, focusZ, tiltX, tiltY, tiltZ;
 float LRHeadAngle, UDHeadAngle;
 
+float chdist;
+
 void setup()
 {
   //fullScreen(P3D);
@@ -26,6 +28,7 @@ void setup()
   textureMode(NORMAL);
   rectMode(CENTER);
   perspective();
+  noCursor();
 
   rbt = (GLWindow)surface.getNative();
   rbt.confinePointer(true);
@@ -39,10 +42,13 @@ void setup()
   tiltX = 0;
   tiltY = 1;
   tiltZ = 0;
-  noCursor();
 
   sprint = false;
+  crouch = false;
+  jump = false;
   speed = 10;
+
+  chdist = 8;
 }
 
 void controlCamera()
@@ -64,18 +70,18 @@ void controlCamera()
   }
   if (skey)
   {
-    eyeX -= 10*cos(LRHeadAngle);
-    eyeZ -= 10*sin(LRHeadAngle);
+    eyeX -= speed*cos(LRHeadAngle);
+    eyeZ -= speed*sin(LRHeadAngle);
   }
   if (akey)
   {
-    eyeX -= 10*cos(LRHeadAngle + PI/2);
-    eyeZ -= 10*sin(LRHeadAngle + PI/2);
+    eyeX -= speed*cos(LRHeadAngle + PI/2);
+    eyeZ -= speed*sin(LRHeadAngle + PI/2);
   }
   if (dkey)
   {
-    eyeX -= 10*cos(LRHeadAngle - PI/2);
-    eyeZ -= 10*sin(LRHeadAngle - PI/2);
+    eyeX -= speed*cos(LRHeadAngle - PI/2);
+    eyeZ -= speed*sin(LRHeadAngle - PI/2);
   }
 
   if (skipFrame == false) {
@@ -85,59 +91,72 @@ void controlCamera()
   if (UDHeadAngle > PI/2.5) UDHeadAngle = PI/2.5;
   if (UDHeadAngle < -PI/2.5) UDHeadAngle = -PI/2.5;
 
-  focusX = eyeX + 300*cos(LRHeadAngle);
-  focusZ = eyeZ + 300*sin(LRHeadAngle);
-  focusY = eyeY + 300*tan(UDHeadAngle);
+  focusX = eyeX + 600*cos(LRHeadAngle);
+  focusZ = eyeZ + 600*sin(LRHeadAngle);
+  focusY = eyeY + 600*tan(UDHeadAngle);
 }
 
 void draw()
 {
-  background(#ffffff);
+  background(0);
   pushMatrix();
-  if (ckey)
+  
+  crouch = false;
+  if (ckey) //crouch/slide
   {
-    if (sprint) speed = 80;
-    else speed = 40;
+    crouch = true;
+    //if (sprint) speed = 80;
+    //else if (!jump) speed = 40;
     if (eyeY < height/2+100)
     {
       eyeY += 15;
     }
   } else if (eyeY > height/2) eyeY -= 15;
 
+  if (eyeY >= height/2)
+  {
+    if (spacekey)
+    {
+      jump = true;
+      speed += 20;
+      spacekey = false;
+    }
+  }
+  if (jump)
+  {
+    eyeY -= jumpspeed;
+    jumpspeed--;
+  } else
+  {
+    jumpspeed = 50;
+    //if (eyeY < height/2-50) eyeY += 50;
+    if (!crouch) eyeY = height/2;
+  }
+  if (jumpspeed < 0 && eyeY >= height/2) jump = false;
+  
   println(speed);
 
   camera(eyeX, eyeY, eyeZ, focusX, focusY, focusZ, tiltX, tiltY, tiltZ);
-  drawFloor(1000, 50);
+  drawFloor(11000, 400);
   drawFocalPoint();
   controlCamera();
   popMatrix();
 
   if (focused) rbt.warpPointer(width/2, height/2);
 
-  fill(0);
-  rect(width/2, height/2, 2, 20);
-  rect(width/2, height/2, 20, 2);
+  drawCrosshair();
 }
 
-void drawFloor(int d, int s)
+void drawFloor(int d, int s) //diameter, tilesize
 {
   for (int x = floor(eyeX/s)-floor(d/s/2); x < floor(eyeX/s)+floor(d/s/2); x++)
   {
     for (int z = floor(eyeZ/s)-floor(d/s/2); z < floor(eyeZ/s)+floor(d/s/2); z++)
     {
       stroke(0);
-      //line(x*s, height, eyeZ-d/2, x*s, height, eyeZ+d/2);
-      //line(eyeX-d/2, height, z*s, eyeX+d/2, height, z*s);
       if (dist(x*s, z*s, eyeX, eyeZ) < d/2)
       {
-        fill(#262626);
-        beginShape(QUADS);
-        fill(#262626);
-        vertex(x*s-s/2, height, z*s-s/2);
-        vertex(x*s+s/2, height, z*s-s/2);
-        vertex(x*s+s/2, height, z*s+s/2);
-        vertex(x*s-s/2, height, z*s+s/2);
-        endShape();
+        floorTile(x, height, z, s);
       }
     }
   }
@@ -150,4 +169,37 @@ void drawFocalPoint()
   stroke(#ffffff);
   //sphere(5);
   popMatrix();
+}
+
+void drawCrosshair()
+{
+  if (sprint)
+  {
+    if (chdist < 20) chdist += 4;
+  } else if (chdist > 8) chdist -= 4;
+
+  fill(0);
+  noStroke();
+  pushMatrix();
+  translate(width/2, height/2);
+  //rotate(radians(45));
+  fill(#ffffff);
+  rect(0, chdist, 2, 8);
+  rect(0, -chdist, 2, 8);
+  rect(chdist, 0, 8, 2);
+  rect(-chdist, 0, 8, 2);
+  circle(0, 0, 3);
+  popMatrix();
+}
+
+void floorTile(float x, float y, float z, float s)
+{
+  fill(#101010);
+  stroke(#0bb1b7);
+  beginShape(QUADS);
+  vertex(x*s, y, z*s);
+  vertex(x*s+s, y, z*s);
+  vertex(x*s+s, y, z*s+s);
+  vertex(x*s, y, z*s+s);
+  endShape();
 }
