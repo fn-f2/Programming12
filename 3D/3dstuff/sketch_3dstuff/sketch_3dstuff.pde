@@ -10,7 +10,7 @@ GLWindow rbt;
 boolean skipFrame;
 
 boolean sprint, crouch, jump;
-float speed, jumpspeed;
+float speed, jumpspeed, slidespeed;
 
 //keyboard
 boolean wkey, akey, skey, dkey, qkey, ekey, ckey, shiftkey, spacekey;
@@ -47,6 +47,8 @@ void setup()
   crouch = false;
   jump = false;
   speed = 10;
+  jumpspeed = 50;
+  slidespeed = 50;
 
   chdist = 8;
 }
@@ -63,25 +65,28 @@ void controlCamera()
     if (!ckey) speed = 20;
   }
 
-  if (wkey)
+  if (!crouch)
   {
-    eyeX += speed*cos(LRHeadAngle);
-    eyeZ += speed*sin(LRHeadAngle);
-  }
-  if (skey)
-  {
-    eyeX -= speed*cos(LRHeadAngle);
-    eyeZ -= speed*sin(LRHeadAngle);
-  }
-  if (akey)
-  {
-    eyeX -= speed*cos(LRHeadAngle + PI/2);
-    eyeZ -= speed*sin(LRHeadAngle + PI/2);
-  }
-  if (dkey)
-  {
-    eyeX -= speed*cos(LRHeadAngle - PI/2);
-    eyeZ -= speed*sin(LRHeadAngle - PI/2);
+    if (wkey)
+    {
+      eyeX += speed*cos(LRHeadAngle);
+      eyeZ += speed*sin(LRHeadAngle);
+    }
+    if (skey)
+    {
+      eyeX -= speed*cos(LRHeadAngle);
+      eyeZ -= speed*sin(LRHeadAngle);
+    }
+    if (akey)
+    {
+      eyeX -= speed*cos(LRHeadAngle + PI/2);
+      eyeZ -= speed*sin(LRHeadAngle + PI/2);
+    }
+    if (dkey)
+    {
+      eyeX -= speed*cos(LRHeadAngle - PI/2);
+      eyeZ -= speed*sin(LRHeadAngle - PI/2);
+    }
   }
 
   if (skipFrame == false) {
@@ -100,29 +105,42 @@ void draw()
 {
   background(0);
   pushMatrix();
-  
+
   crouch = false;
   if (ckey) //crouch/slide
   {
     crouch = true;
     //if (sprint) speed = 80;
     //else if (!jump) speed = 40;
+    if (slidespeed > 0)
+    {
+      eyeX += slidespeed*cos(LRHeadAngle);
+      eyeZ += slidespeed*sin(LRHeadAngle);
+      if (eyeY >= height/2) slidespeed-=0.5;
+    }
+
     if (eyeY < height/2+100)
     {
+      //crouch = false;
       eyeY += 15;
     }
-  } else if (eyeY > height/2) eyeY -= 15;
+  } else if (eyeY > height/2)
+  {
+    crouch = true;
+    eyeY -= 15;
+    slidespeed = 50;
+  } else slidespeed = 50;
 
   if (eyeY >= height/2)
   {
-    if (spacekey)
+    if (spacekey) //jump
     {
       jump = true;
       speed += 20;
       spacekey = false;
     }
   }
-  if (jump)
+  if (jump) //jump bool
   {
     eyeY -= jumpspeed;
     jumpspeed--;
@@ -133,7 +151,7 @@ void draw()
     if (!crouch) eyeY = height/2;
   }
   if (jumpspeed < 0 && eyeY >= height/2) jump = false;
-  
+
   println(speed);
 
   camera(eyeX, eyeY, eyeZ, focusX, focusY, focusZ, tiltX, tiltY, tiltZ);

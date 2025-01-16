@@ -10,7 +10,7 @@ class FPlayer extends FGameObject
   {
     super();
     setPosition(100, 520);
-    setFillColor(#ff0000);
+    setFillColor(#ffffff);
     setRotatable(false);
     setNoStroke();
     setRestitution(0);
@@ -31,12 +31,21 @@ class FPlayer extends FGameObject
   void animate()
   {
     setRotation(-mapangle);
-    if (frame >= action.length) frame = 0;
-    if (frameCount % 10 == 0)
+    //if (frame >= action.length) frame = 0;
+    //if (frameCount % 10 == 0)
+    //{
+    //  if (direction == R) attachImage(action[frame]);
+    //  if (direction == L) attachImage(reverseImage(action[frame]));
+    //  frame++;
+    //}
+    int a = 20;
+    for (int i = 30; i < 150; i+=5)
     {
-      if (direction == R) attachImage(action[frame]);
-      if (direction == L) attachImage(reverseImage(action[frame]));
-      frame++;
+      noStroke();
+      fill(255, a);
+      println(getX(), getY());
+      circle(height/2, width/2, i);
+      a--;
     }
   }
 
@@ -75,7 +84,6 @@ class FPlayer extends FGameObject
       mrotation = 1;
       setVelocity(0, 0);
     }
-    println(mrotation);
   }
 
   void jump(float vx, float vy)

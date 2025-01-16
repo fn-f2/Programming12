@@ -91,7 +91,7 @@ void setup()
 
 void draw()
 {
-  background(#ffffff);
+  background(#d1665e);
   drawWorld();
   actWorld();
   qePress();
@@ -230,7 +230,8 @@ void loadWorld(PImage img)
 
         if (c == black)
         {
-          b.attachImage(stone);
+          //b.attachImage(stone);
+          b.setFill(0);
           b.setFriction(3);
           b.setName("stone");
           world.add(b);
