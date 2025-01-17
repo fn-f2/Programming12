@@ -20,14 +20,24 @@ float eyeX, eyeY, eyeZ, focusX, focusY, focusZ, tiltX, tiltY, tiltZ;
 float LRHeadAngle, UDHeadAngle;
 
 float chdist;
+float fov;
+
+//canvases
+PGraphics world;
+PGraphics hud;
 
 void setup()
 {
+  //create canvases
+  world = createGraphics(width, height, P3D);
+  hud = createGraphics(width, height, P2D);
+  
   //fullScreen(P3D);
-  size(600, 600, P3D);
-  textureMode(NORMAL);
-  rectMode(CENTER);
-  perspective();
+  size(600, 600, P2D);
+  fov = PI/3;
+  world.textureMode(NORMAL);
+  world.rectMode(CENTER);
+  world.perspective();
   noCursor();
 
   rbt = (GLWindow)surface.getNative();
@@ -103,8 +113,9 @@ void controlCamera()
 
 void draw()
 {
-  background(0);
-  pushMatrix();
+  world.beginDraw();
+  world.background(0);
+  world.pushMatrix();
 
   crouch = false;
   if (ckey) //crouch/slide
@@ -152,17 +163,23 @@ void draw()
   }
   if (jumpspeed < 0 && eyeY >= height/2) jump = false;
 
-  println(speed);
+  //println(speed);
 
-  camera(eyeX, eyeY, eyeZ, focusX, focusY, focusZ, tiltX, tiltY, tiltZ);
+  world.camera(eyeX, eyeY, eyeZ, focusX, focusY, focusZ, tiltX, tiltY, tiltZ);
   drawFloor(11000, 400);
   drawFocalPoint();
   controlCamera();
-  popMatrix();
+  world.popMatrix();
 
   if (focused) rbt.warpPointer(width/2, height/2);
 
+  world.endDraw();
+  image(world, 0, 0);
+
+  hud.beginDraw();
   drawCrosshair();
+  hud.endDraw();
+  image(hud, 0, 0);
 }
 
 void drawFloor(int d, int s) //diameter, tilesize
@@ -171,7 +188,7 @@ void drawFloor(int d, int s) //diameter, tilesize
   {
     for (int z = floor(eyeZ/s)-floor(d/s/2); z < floor(eyeZ/s)+floor(d/s/2); z++)
     {
-      stroke(0);
+      world.stroke(0);
       if (dist(x*s, z*s, eyeX, eyeZ) < d/2)
       {
         floorTile(x, height, z, s);
@@ -182,11 +199,11 @@ void drawFloor(int d, int s) //diameter, tilesize
 
 void drawFocalPoint()
 {
-  pushMatrix();
-  translate(focusX, focusY, focusZ);
-  stroke(#ffffff);
-  //sphere(5);
-  popMatrix();
+  //pushMatrix();
+  //translate(focusX, focusY, focusZ);
+  //stroke(#ffffff);
+  ////sphere(5);
+  //popMatrix();
 }
 
 void drawCrosshair()
@@ -195,29 +212,30 @@ void drawCrosshair()
   {
     if (chdist < 20) chdist += 4;
   } else if (chdist > 8) chdist -= 4;
-
-  fill(0);
-  noStroke();
-  pushMatrix();
-  translate(width/2, height/2);
+  hud.background(0, 0);
+  hud.fill(0);
+  hud.noStroke();
+  hud.pushMatrix();
+  hud.rectMode(CENTER);
+  hud.translate(width/2, height/2);
   //rotate(radians(45));
-  fill(#ffffff);
-  rect(0, chdist, 2, 8);
-  rect(0, -chdist, 2, 8);
-  rect(chdist, 0, 8, 2);
-  rect(-chdist, 0, 8, 2);
-  circle(0, 0, 3);
-  popMatrix();
+  hud.fill(#ffffff);
+  hud.rect(0, chdist, 2, 8);
+  hud.rect(0, -chdist, 2, 8);
+  hud.rect(chdist, 0, 8, 2);
+  hud.rect(-chdist, 0, 8, 2);
+  hud.circle(0, 0, 3);
+  hud.popMatrix();
 }
 
 void floorTile(float x, float y, float z, float s)
 {
-  fill(#101010);
-  stroke(#0bb1b7);
-  beginShape(QUADS);
-  vertex(x*s, y, z*s);
-  vertex(x*s+s, y, z*s);
-  vertex(x*s+s, y, z*s+s);
-  vertex(x*s, y, z*s+s);
-  endShape();
+  world.fill(#101010);
+  world.stroke(#0bb1b7);
+  world.beginShape(QUADS);
+  world.vertex(x*s, y, z*s);
+  world.vertex(x*s+s, y, z*s);
+  world.vertex(x*s+s, y, z*s+s);
+  world.vertex(x*s, y, z*s+s);
+  world.endShape();
 }

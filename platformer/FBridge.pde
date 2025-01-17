@@ -27,7 +27,7 @@ class FBridge extends FGameObject
     if (hasTouched)
     {
       timer++;
-      if (timer > 10)
+      if (timer > 20)
       {
         setStatic(false);
         setSensor(true);

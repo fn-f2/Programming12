@@ -52,6 +52,7 @@ boolean rotating;
 ArrayList<FGameObject> terrain;
 FPlayer player;
 
+int level;
 
 //fisica
 FWorld world;
@@ -87,6 +88,8 @@ void setup()
   bridge.resize(gridSize, gridSize);
   loadWorld(map);
   loadPlayer();
+  
+  level = 1;
 }
 
 void draw()
