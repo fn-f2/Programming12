@@ -10,7 +10,7 @@ class FPlayer extends FGameObject
   {
     super();
     setPosition(100, 520);
-    setFillColor(#ffffff);
+    setFillColor(#ff0000);
     setRotatable(false);
     setNoStroke();
     setRestitution(0);
@@ -42,7 +42,7 @@ class FPlayer extends FGameObject
     for (int i = 30; i < 150; i+=5)
     {
       noStroke();
-      fill(255, a);
+      fill(#ff0000, a);
       println(getX(), getY());
       circle(height/2, width/2, i);
       a--;

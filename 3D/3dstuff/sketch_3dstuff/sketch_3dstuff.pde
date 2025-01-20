@@ -178,6 +178,11 @@ void draw()
 
   hud.beginDraw();
   drawCrosshair();
+  hud.textSize(20);
+  hud.fill(#0bb1b7);
+  hud.text("[SHIFT] to sprint", 30, 30);
+  hud.text("[C] to slide", 30, 60);
+  hud.text("[SPACE] to jump", 30, 90);
   hud.endDraw();
   image(hud, 0, 0);
 }
@@ -231,7 +236,7 @@ void drawCrosshair()
 void floorTile(float x, float y, float z, float s)
 {
   world.fill(#101010);
-  world.stroke(#0bb1b7);
+  world.stroke(#ffd500);
   world.beginShape(QUADS);
   world.vertex(x*s, y, z*s);
   world.vertex(x*s+s, y, z*s);
