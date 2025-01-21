@@ -1,5 +1,6 @@
 class FBridge extends FGameObject
 {
+  float x, y;
   boolean hasTouched = false;
   int timer;
 
@@ -16,6 +17,9 @@ class FBridge extends FGameObject
     attachImage(bridge);
     setStatic(true);
     setFriction(4);
+    
+    this.x = x;
+    this.y = y;
   }
 
   void act()
@@ -33,5 +37,12 @@ class FBridge extends FGameObject
         setSensor(true);
       }
     }
+  }
+  
+  void reset()
+  {
+    setPosition(x, y);
+    setStatic(true);
+    setSensor(false);
   }
 }

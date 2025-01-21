@@ -1,5 +1,5 @@
 class FFloatPlat extends FGameObject
-{ 
+{
   FFloatPlat(float x, float y, String n, PImage img)
   {
     super();

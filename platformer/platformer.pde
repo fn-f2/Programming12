@@ -15,7 +15,7 @@ PImage[] jump;
 PImage[] run;
 PImage[] action;
 
-PImage map, ice, treetrunk, treetopc, treetope, treetopw, treetopi, stone, spiken, spikee, spikes, spikew, bridge;
+PImage map, map2, ice, treetrunk, treetopc, treetope, treetopw, treetopi, stone, spiken, spikee, spikes, spikew, bridge;
 
 int gridSize = 18;
 int mrotation = 1;
@@ -56,12 +56,15 @@ int level;
 
 int mode;
 
+Button play, quit, level1, level2, level3, back;
+
 final int INTRO = 1;
 final int GAME = 2;
 final int PAUSE = 3;
 final int GAMEOVER = 4;
+final int LVLSELECT = 5;
 //fisica
-FWorld world1;
+FWorld currentWorld;
 
 void setup()
 {
@@ -71,9 +74,8 @@ void setup()
   textAlign(CENTER, CENTER);
   Fisica.init(this);
 
-  terrain = new ArrayList();
-
   map = loadImage("map.png");
+  map2 = loadImage("testmap.png");
   ice = loadImage("blueBlock.png");
   ice.resize(gridSize, gridSize);
   treetrunk = loadImage("tree_trunk.png");
@@ -98,12 +100,20 @@ void setup()
   stone.resize(gridSize, gridSize);
   bridge = loadImage("bridge_center.png");
   bridge.resize(gridSize, gridSize);
-  loadWorld(map);
+  loadWorld("map.png");
   loadPlayer();
 
   level = 1;
 
-  mode = GAME;
+  mode = INTRO;
+
+  noStroke();
+  play = new Button("P L A Y", width/2, height/2, 200, 100, #8ab7ff, #f0f0f0);
+  quit = new Button("Q U I T", width/2, height/2+150, 200, 100, #8ab7ff, #f0f0f0);
+  level1 = new Button("0 1", width*0.2, 180, 150, 100, #8ab7ff, #f0f0f0);
+  level2 = new Button("0 2", width/2, 180, 150, 100, #8ab7ff, #f0f0f0);
+  level3 = new Button("0 3", width*0.8, 180, 150, 100, #8ab7ff, #f0f0f0);
+  back = new Button("B A C K", 100, height-50, 120, 50, #8ab7ff, #f0f0f0);
 }
 
 void draw()
@@ -122,6 +132,9 @@ void draw()
   case GAMEOVER:
     gameover();
     break;
+  case LVLSELECT:
+    lvlselect();
+    break;
   default:
     println("ERROR: Mode = " + mode);
     break;
@@ -133,16 +146,16 @@ void drawWorld()
   if (mapangle > radians(358)) mapangle = 0;
   if (mapangle < 0) mapangle = radians(358);
   pushMatrix();
-  if (mrotation == 1) world1.setGravity(0, 900);
-  if (mrotation == 2) world1.setGravity(900, 0);
-  if (mrotation == 3) world1.setGravity(0, -900);
-  if (mrotation == 4) world1.setGravity(-900, 0);
+  if (mrotation == 1) currentWorld.setGravity(0, 900);
+  if (mrotation == 2) currentWorld.setGravity(900, 0);
+  if (mrotation == 3) currentWorld.setGravity(0, -900);
+  if (mrotation == 4) currentWorld.setGravity(-900, 0);
   translate(width/2, height/2);
   rotate(mapangle);
   translate(-player.getX()*zoom, -player.getY()*zoom);
   scale(zoom);
-  world1.step();
-  world1.draw();
+  currentWorld.step();
+  currentWorld.draw();
   popMatrix();
   textSize(20);
   //text("angle: "+round(degrees(mapangle))+" rotation: "+mrotation, width/2, height/2);
@@ -237,23 +250,26 @@ void loadPlayer()
   action = idle;
 
   player = new FPlayer();
-  world1.add(player);
+  currentWorld.add(player);
 }
 
-void loadWorld(PImage img)
+void loadWorld(String img)
 {
-  world1 = new FWorld(-2000, -2000, 2000, 2000);
-  world1.setGravity(0, 900);
+  currentWorld = new FWorld(-2000, -2000, 2000, 2000);
+  currentWorld.setGravity(0, 900);
+
+  terrain = new ArrayList();
+  map = loadImage(img);
 
   for (int y = 0; y < map.height; y++)
   {
     for (int x = 0; x < map.width; x++)
     {
-      color c = img.get(x, y); //color of current pixel
-      color n = img.get(x, y-1);
-      color s = img.get(x, y+1); //color below current pixel
-      color w = img.get(x-1, y); // color west of current pixel
-      color e = img.get(x+1, y); // color east of current pixel
+      color c = map.get(x, y); //color of current pixel
+      color n = map.get(x, y-1);
+      color s = map.get(x, y+1); //color below current pixel
+      color w = map.get(x-1, y); // color west of current pixel
+      color e = map.get(x+1, y); // color east of current pixel
       //if (c == black || c == cyan || c == grey || c == green || c == brown)
       if (c!=color (0, 0))
       {
@@ -268,27 +284,27 @@ void loadWorld(PImage img)
           b.setFillColor(#ffffff);
           b.setFriction(3);
           b.setName("stone");
-          world1.add(b);
+          currentWorld.add(b);
         } else if (c == cyan)
         {
           b.attachImage(ice);
           b.setFriction(0);
           b.setName("ice");
-          world1.add(b);
+          currentWorld.add(b);
         } else if (c == grey)
         {
           b.setRestitution(1);
           b.setFriction(0.5);
           b.setFillColor(grey);
           b.setName("trampoline");
-          world1.add(b);
+          currentWorld.add(b);
         } else if (c == brown)
         {
           b.attachImage(treetrunk);
           b.setFriction(0.5);
           b.setSensor(true);
           b.setName("treetrunk");
-          world1.add(b);
+          currentWorld.add(b);
         } else if (c == green)
         {
           PImage timg = treetopc;
@@ -298,7 +314,7 @@ void loadWorld(PImage img)
           else if (e == green && w == green && s == brown) timg = treetopi;
           FFloatPlat tt = new FFloatPlat(x*gridSize, y*gridSize, "treetop", timg);
           terrain.add(tt);
-          world1.add(tt);
+          currentWorld.add(tt);
         } else if (c == purple)
         {
           PImage spike = spiken;
@@ -310,14 +326,27 @@ void loadWorld(PImage img)
           //b.setFillColor(#ff0000);
           b.setName("spike");
           terrain.add(b);
-          world1.add(b);
+          currentWorld.add(b);
         } else if (c == darkbrown)
         {
           FBridge br = new FBridge(x*gridSize, y*gridSize);
           terrain.add(br);
-          world1.add(br);
+          currentWorld.add(br);
+        } else if (c == #ff8716)
+        {
+          finishBlock fb = new finishBlock(x*gridSize, y*gridSize);
+          currentWorld.add(fb);
         }
       }
     }
+  }
+}
+
+
+void levelReset()
+{
+  for (int i = 0; i < terrain.size(); i++)
+  {
+    terrain.get(i).reset();
   }
 }

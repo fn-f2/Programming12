@@ -3,6 +3,7 @@ class FGameObject extends FBox
   FGameObject()
   {
     super(gridSize, gridSize);
+    setGrabbable(false);
   }
 
   void act()
@@ -26,5 +27,9 @@ class FGameObject extends FBox
       if (fc.contains(n)) return true;
     }
     return false;
+  }
+
+  void reset()
+  {
   }
 }

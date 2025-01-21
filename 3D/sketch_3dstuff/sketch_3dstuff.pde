@@ -26,8 +26,13 @@ float fov;
 PGraphics world;
 PGraphics hud;
 
+PImage bg;
+
 void setup()
 {
+  imageMode(CENTER);
+  rectMode(CENTER);
+  
   //create canvases
   world = createGraphics(width, height, P3D);
   hud = createGraphics(width, height, P2D);
@@ -61,6 +66,8 @@ void setup()
   slidespeed = 50;
 
   chdist = 8;
+  
+  bg = loadImage("water1.png");
 }
 
 void controlCamera()
@@ -113,7 +120,8 @@ void controlCamera()
 
 void draw()
 {
-  image(loadImage("water1.png"), width/2, height/2);
+  image(bg, width/2, height/2);
+  bg.resize(width, height);
   world.beginDraw();
   world.background(0, 0);
   world.pushMatrix();
@@ -175,7 +183,7 @@ void draw()
   if (focused) rbt.warpPointer(width/2, height/2);
 
   world.endDraw();
-  image(world, 0, 0);
+  image(world, width/2, height/2);
 
   hud.beginDraw();
   drawCrosshair();
@@ -185,7 +193,7 @@ void draw()
   hud.text("[C] to slide", 30, 60);
   hud.text("[SPACE] to jump", 30, 90);
   hud.endDraw();
-  image(hud, 0, 0);
+  image(hud, width/2, height/2);
 }
 
 void drawFloor(int d, int s) //diameter, tilesize

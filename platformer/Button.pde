@@ -19,12 +19,12 @@ class Button
   }
 
   void show()
-  {
+  { 
     rectMode(CENTER);
     textAlign(CENTER, CENTER);
     if (checkMouseWithin(x, y, w, h)) fill(high);
     else fill(norm);
-    rect(x, y, w, h, 16);
+    rect(x, y, w, h);
     if (checkMouseWithin(x, y, w, h)) fill(norm);
     else fill(high);
     textSize(w/6);

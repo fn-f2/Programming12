@@ -10,12 +10,12 @@ class FPlayer extends FGameObject
   {
     super();
     setPosition(100, 520);
-    setFillColor(#ff0000);
+    setFillColor(#ffe88a);
     setRotatable(false);
     setNoStroke();
     setRestitution(0);
     setName("player");
-    jumpPower = 400;
+    jumpPower = 350;
     runV = 150;
   }
 
@@ -42,7 +42,7 @@ class FPlayer extends FGameObject
     for (int i = 30; i < 150; i+=5)
     {
       noStroke();
-      fill(#ff0000, a);
+      fill(#ffe88a, a);
       println(getX(), getY());
       circle(height/2, width/2, i);
       a--;
@@ -79,10 +79,23 @@ class FPlayer extends FGameObject
   {
     if (onTopOf("spike"))
     {
-      setPosition(100, 520);
+      if (level == 1) setPosition(100, 520);
+      loadWorld("map.png");
+      loadPlayer();
       mapangle = 0;
       mrotation = 1;
       setVelocity(0, 0);
+    }
+
+    if (isTouching("finish"))
+    {
+      loadWorld("testmap.png");
+      loadPlayer();
+      mapangle = 0;
+      mrotation = 1;
+      setVelocity(0, 0);
+      if (level < 3) level++;
+      else mode = GAMEOVER;
     }
   }
 
