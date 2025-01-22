@@ -15,7 +15,7 @@ PImage[] jump;
 PImage[] run;
 PImage[] action;
 
-PImage map, map2, ice, treetrunk, treetopc, treetope, treetopw, treetopi, stone, spiken, spikee, spikes, spikew, bridge;
+PImage map, map2, ice, treetrunk, treetopc, treetope, treetopw, treetopi, stone, spiken, spikee, spikes, spikew, spikene, spikese, spikesw, spikenw, spikebn, spikebe, spikebs, spikebw, bridge, turret, fire, keyimg;
 
 int gridSize = 18;
 int mrotation = 1;
@@ -49,14 +49,18 @@ boolean isgrounded;
 
 boolean rotating;
 
+boolean unlocked;
+
 ArrayList<FGameObject> terrain;
+ArrayList<FGameObject> enemies;
+
 FPlayer player;
 
 int level;
 
 int mode;
 
-Button play, quit, level1, level2, level3, back;
+Button play, quit, level1, level2, level3, back, resume, exit;
 
 final int INTRO = 1;
 final int GAME = 2;
@@ -75,7 +79,7 @@ void setup()
   Fisica.init(this);
 
   map = loadImage("map.png");
-  map2 = loadImage("testmap.png");
+  map2 = loadImage("map2.png");
   ice = loadImage("blueBlock.png");
   ice.resize(gridSize, gridSize);
   treetrunk = loadImage("tree_trunk.png");
@@ -96,12 +100,34 @@ void setup()
   spikes.resize(gridSize, gridSize);
   spikew = loadImage("spikew.png");
   spikew.resize(gridSize, gridSize);
+  spikene = loadImage("spikene.png");
+  spikene.resize(gridSize, gridSize);
+  spikese = loadImage("spikese.png");
+  spikese.resize(gridSize, gridSize);
+  spikesw = loadImage("spikesw.png");
+  spikesw.resize(gridSize, gridSize);
+  spikenw = loadImage("spikenw.png");
+  spikenw.resize(gridSize, gridSize);
+  spikebn = loadImage("spikeb.png");
+  spikebn.resize(gridSize, gridSize);
+  spikebe = loadImage("spikebe.png");
+  spikebe.resize(gridSize, gridSize);
+  spikebs = loadImage("spikebs.png");
+  spikebs.resize(gridSize, gridSize);
+  spikebw = loadImage("spikebw.png");
+  spikebw.resize(gridSize, gridSize);
   stone = loadImage("brick.png");
   stone.resize(gridSize, gridSize);
   bridge = loadImage("bridge_center.png");
   bridge.resize(gridSize, gridSize);
+  turret = loadImage("turret.png");
+  turret.resize(gridSize, gridSize);
+  fire = loadImage("fire.png");
+  fire.resize(gridSize, gridSize);
+  keyimg = loadImage("key.png");
+  keyimg.resize(gridSize, gridSize);
   loadWorld("map.png");
-  loadPlayer();
+  loadPlayer(100, 520);
 
   level = 1;
 
@@ -114,6 +140,8 @@ void setup()
   level2 = new Button("0 2", width/2, 180, 150, 100, #8ab7ff, #f0f0f0);
   level3 = new Button("0 3", width*0.8, 180, 150, 100, #8ab7ff, #f0f0f0);
   back = new Button("B A C K", 100, height-50, 120, 50, #8ab7ff, #f0f0f0);
+  resume = new Button("R E S U M E", width/2, height/2-100, 130, 80, #8ab7ff, #f0f0f0);
+  exit = new Button("E X I T", width/2, height/2, 130, 80, #8ab7ff, #f0f0f0);
 }
 
 void draw()
@@ -218,9 +246,15 @@ void actWorld()
     FGameObject t = terrain.get(i);
     t.act();
   }
+
+  for (int i = 0; i < enemies.size(); i++)
+  {
+    FGameObject e = enemies.get(i);
+    e.act();
+  }
 }
 
-void loadPlayer()
+void loadPlayer(float x, float y)
 {
 
   //Load Sprites
@@ -249,16 +283,18 @@ void loadPlayer()
 
   action = idle;
 
-  player = new FPlayer();
+  player = new FPlayer(x, y);
   currentWorld.add(player);
 }
 
 void loadWorld(String img)
 {
+  unlocked = false;
   currentWorld = new FWorld(-2000, -2000, 2000, 2000);
   currentWorld.setGravity(0, 900);
 
   terrain = new ArrayList();
+  enemies = new ArrayList();
   map = loadImage(img);
 
   for (int y = 0; y < map.height; y++)
@@ -315,38 +351,86 @@ void loadWorld(String img)
           FFloatPlat tt = new FFloatPlat(x*gridSize, y*gridSize, "treetop", timg);
           terrain.add(tt);
           currentWorld.add(tt);
-        } else if (c == purple)
+        } else if (c == purple) //spike
         {
           PImage spike = spiken;
-          if (w == black) spike = spikee;
+
+          if ((n == black && e == black) || (s == black && e == black) || (n == black && w == black) || (s == black && w == black)) //if connected to two ground blocks
+          {
+            if (n == purple && e == purple) spike = spikene; //if connected to two spikes
+            else if (s == purple && e == purple) spike = spikese;
+            else if (s == purple && w == purple) spike = spikesw;
+            else if (n == purple && w == purple) spike = spikenw;
+            else if (n == purple) //if only connected to one spike
+            {
+              if (w == black) spike = spikee;
+              else spike = spikew;
+            } else if (e == purple)
+            {
+              if (n == black) spike = spikes;
+              else spike = spiken;
+            } else if (s == purple)
+            {
+              if (e == black) spike = spikew;
+              else spike = spikee;
+            } else if (w == purple)
+            {
+              if (s == black) spike = spiken;
+              else spike = spikes;
+            }
+          } else if (n == black) spike = spikes; //if only connected to one ground block
           else if (e == black) spike = spikew;
-          else if (n == black) spike = spikes;
           else if (s == black) spike = spiken;
+          else if (w == black) spike = spikee;
+
           b.attachImage(spike);
-          //b.setFillColor(#ff0000);
           b.setName("spike");
           terrain.add(b);
           currentWorld.add(b);
         } else if (c == darkbrown)
         {
-          FBridge br = new FBridge(x*gridSize, y*gridSize);
+          FBridge br = new FBridge(x*gridSize, y*gridSize); //bridge
           terrain.add(br);
           currentWorld.add(br);
         } else if (c == #ff8716)
         {
-          finishBlock fb = new finishBlock(x*gridSize, y*gridSize);
+          finishBlock fb = new finishBlock(x*gridSize, y*gridSize); //finish block
           currentWorld.add(fb);
+        } else if (c == #ff0000)
+        {
+          Turret trt = new Turret(x*gridSize, y*gridSize); //turret
+          enemies.add(trt);
+          currentWorld.add(trt);
+        } else if (c == #424242)
+        {
+          b.setName("wall"); //wall
+          b.setFillColor(#ffffff);
+          currentWorld.add(b);
+        }
+        else if (c == #1500ff)
+        {
+          FMovingPlat mp = new FMovingPlat(x*gridSize, y*gridSize); //moving platform
+          terrain.add(mp);
+          currentWorld.add(mp);
+        } else if (c == #ffffff)
+        {
+          PImage lock = spikebn;
+          
+          if (n == black || n == #ff8716) lock = spikebs;
+          else if (e == black || e == #ff8716) lock = spikebw;
+          else if (s == black || s == #ff8716) lock = spikebn;
+          else if (w == black || w == #ff8716) lock = spikebe;
+          
+          Lock l = new Lock(x*gridSize, y*gridSize, lock); //lock
+          terrain.add(l);
+          currentWorld.add(l);
+        } else if (c == #262626)
+        {
+          Key k = new Key(x*gridSize, y*gridSize); //lock
+          terrain.add(k);
+          currentWorld.add(k);
         }
       }
     }
-  }
-}
-
-
-void levelReset()
-{
-  for (int i = 0; i < terrain.size(); i++)
-  {
-    terrain.get(i).reset();
   }
 }

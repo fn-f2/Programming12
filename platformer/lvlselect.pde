@@ -12,15 +12,15 @@ void lvlselect()
   {
     level = 1;
     loadWorld("map.png");
-    loadPlayer();
+    loadPlayer(100, 520);
     mode = GAME;
   }
   level2.show();
   if (level2.clicked)
   {
     level = 2;
-    loadWorld("testmap.png");
-    loadPlayer();
+    loadWorld("map2.png");
+    loadPlayer(500, 520);
     mode = GAME;
   }
   level3.show();
@@ -28,7 +28,7 @@ void lvlselect()
   {
     level = 3;
     loadWorld("map.png");
-    loadPlayer();
+    loadPlayer(0, 0);
     mode = GAME;
   }
   back.show();

@@ -8,8 +8,13 @@ void game()
   drawWorld();
   actWorld();
   qePress();
+  
+  fill(0);
+  textSize(30);
+  text("R E A C H   T H E   G R E E N", width/2, 30);
 }
 
 void gameClick()
 {
+  mode = PAUSE;
 }

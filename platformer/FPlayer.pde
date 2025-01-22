@@ -6,10 +6,10 @@ class FPlayer extends FGameObject
   final int L = -1;
   final int R = 1;
 
-  FPlayer()
+  FPlayer(float x, float y)
   {
     super();
-    setPosition(100, 520);
+    setPosition(x, y);
     setFillColor(#ffe88a);
     setRotatable(false);
     setNoStroke();
@@ -43,7 +43,6 @@ class FPlayer extends FGameObject
     {
       noStroke();
       fill(#ffe88a, a);
-      println(getX(), getY());
       circle(height/2, width/2, i);
       a--;
     }
@@ -77,11 +76,17 @@ class FPlayer extends FGameObject
 
   void collisions()
   {
-    if (onTopOf("spike"))
+    if (onTopOf("spike") || isTouching("bullet") || (isTouching("lock") && !unlocked))
     {
-      if (level == 1) setPosition(100, 520);
-      loadWorld("map.png");
-      loadPlayer();
+      if (level == 1)
+      {
+        loadWorld("map.png");
+        loadPlayer(100, 520);
+      } else if (level == 2)
+      {
+        loadWorld("map2.png");
+        loadPlayer(500, 520);
+      }
       mapangle = 0;
       mrotation = 1;
       setVelocity(0, 0);
@@ -89,8 +94,9 @@ class FPlayer extends FGameObject
 
     if (isTouching("finish"))
     {
-      loadWorld("testmap.png");
-      loadPlayer();
+      loadWorld("map2.png");
+      if (level == 1) loadPlayer(100, 520);
+      else if (level == 2) loadPlayer(500, 520);
       mapangle = 0;
       mrotation = 1;
       setVelocity(0, 0);
@@ -102,7 +108,7 @@ class FPlayer extends FGameObject
   void jump(float vx, float vy)
   {
 
-    if (onTopOf("stone") || onTopOf("treetop") || onTopOf ("bridge"))
+    if (onTopOf("stone") || onTopOf ("bridge") || onTopOf("movingplat"))
     {
       if (mrotation==1) setVelocity(vx, -jumpPower);
       else if (mrotation==2) setVelocity(-jumpPower, vy);
@@ -140,11 +146,7 @@ class FPlayer extends FGameObject
       if (fc.contains(n))
       {
         return true;
-        //  if ((mrotation == 1 || mrotation == 3) && getY() > fc.getY()) return true;
-        //  else if ((mrotation == 2 || mrotation == 4) && getX() < fc.getX()) return true;
       }
-      /*&& getX()+gridSize/2 > fc.getX()-gridSize/2+8*/
-      /*&& getX()+gridSize/2 < fc.getX()+gridSize*1.5-8*/
     }
     return false;
   }
