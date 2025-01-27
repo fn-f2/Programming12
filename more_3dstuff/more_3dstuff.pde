@@ -23,15 +23,28 @@ float LRHeadAngle, UDHeadAngle;
 PGraphics world;
 PGraphics hud;
 
-PImage map, stone;
+PImage map, stone, dirt, diamond;
 
 int gridSize;
 
+color red, black, white, brown, orange, cyan;
+
+ArrayList<GameObject> objects;
+
 void setup()
 {
+  objects = new ArrayList();
+  
   imageMode(CENTER);
   rectMode(CENTER);
   textureMode(NORMAL);
+
+  red = #FF0000;
+  black = #000000;
+  white = #ffffff;
+  brown = #B97A57;
+  //orange = ;
+  //cyan = ;
 
   //create canvases
   world = createGraphics(width, height, P3D);
@@ -41,6 +54,10 @@ void setup()
   gridSize = 100;
 
   stone = loadImage("Stone_Bricks.png");
+  dirt = loadImage("dirt.png");
+  dirt.resize(120, 120);
+  diamond = loadImage("Diamond.png");
+  diamond.resize(120, 120);
 
   //fullScreen(P3D);
   size(600, 600, P2D);
@@ -53,8 +70,8 @@ void setup()
   rbt.confinePointer(true);
 
   eyeX = width/2;
-  eyeY = height/2;
-  eyeZ = 0;
+  eyeY = 75*height/100;
+  eyeZ = height/2;
   focusX = width/2;
   focusY = width/2;
   focusZ = 10;
@@ -65,33 +82,51 @@ void setup()
   speed = 10;
 }
 
+boolean canMoveForward()
+{
+  float fwdx, fwdz, lx, lz, rx, rz;
+  int mapx, mapy, maplx, maply, maprx, mapry;
+  fwdx = eyeX + 150*cos(LRHeadAngle);
+  lx = eyeX + 150*cos(LRHeadAngle+radians(20)+radians(0));
+  rx = eyeX + 150*cos(LRHeadAngle-radians(20)+radians(0));
+  fwdz = eyeZ + 150*sin(LRHeadAngle);
+  lz = eyeZ + 150*sin(LRHeadAngle+radians(20)+radians(0));
+  rz = eyeZ + 150*sin(LRHeadAngle-radians(20)+radians(0));
+  mapx = int(fwdx+2000-gridSize)/gridSize;
+  mapy = int(fwdz+2000-gridSize)/gridSize;
+  maplx = int(lx+2000-gridSize)/gridSize;
+  maply = int(lz+2000-gridSize)/gridSize;
+  maprx = int(rx+2000-gridSize)/gridSize;
+  mapry = int(rz+2000-gridSize)/gridSize;
+  
+  if (map.get(mapx, mapy) == white && map.get(maplx, maply) == white && map.get(maprx, mapry) == white) return true;
+  else return false;
+}
+
 void controlCamera()
 {
-  if (wkey)
+  if (wkey && canMoveForward())
   {
     eyeX += speed*cos(LRHeadAngle);
     eyeZ += speed*sin(LRHeadAngle);
   }
-  if (skey)
+  if (skey && canMoveBackward())
   {
     eyeX -= speed*cos(LRHeadAngle);
     eyeZ -= speed*sin(LRHeadAngle);
   }
-  if (akey)
+  if (akey && canMoveLeft())
   {
     eyeX -= speed*cos(LRHeadAngle + PI/2);
     eyeZ -= speed*sin(LRHeadAngle + PI/2);
   }
-  if (dkey)
+  if (dkey && canMoveRight())
   {
     eyeX -= speed*cos(LRHeadAngle - PI/2);
     eyeZ -= speed*sin(LRHeadAngle - PI/2);
   }
-
-  if (skipFrame == false) {
-    LRHeadAngle += 0.01*(mouseX - width/2);
-    UDHeadAngle +=  0.01*(mouseY - height/2);
-  }
+  LRHeadAngle += 0.01*(mouseX - width/2);
+  UDHeadAngle +=  0.01*(mouseY - height/2);
   if (UDHeadAngle > PI/2.5) UDHeadAngle = PI/2.5;
   if (UDHeadAngle < -PI/2.5) UDHeadAngle = -PI/2.5;
 
@@ -105,17 +140,29 @@ void draw()
   world.beginDraw();
   world.background(0);
   world.pushMatrix();
-
   world.camera(eyeX, eyeY, eyeZ, focusX, focusY, focusZ, tiltX, tiltY, tiltZ);
+  world.pointLight(255, 255, 255, eyeX, eyeY, eyeZ);
   controlCamera();
-  drawFloor();
+  snowball();
+  drawFloor(2000, height, gridSize);
+  drawFloor(2000, height-gridSize*4, gridSize);
   drawMap();
+  
+  int i = 0;
+  while (i < objects.size())
+  {
+    GameObject obj = objects.get(i);
+    obj.act();
+    obj.show();
+    if (obj.lives < 1) objects.remove(i);
+    else i++;
+  }
+  
   world.popMatrix();
-
-  if (focused) rbt.warpPointer(width/2, height/2);
-
   world.endDraw();
   image(world, width/2, height/2);
+
+  if (focused) rbt.warpPointer(width/2, height/2);
 
   hud.beginDraw();
   drawCrosshair();
@@ -130,31 +177,40 @@ void drawMap()
     for (int y = 0; y < map.height; y++)
     {
       color c = map.get(x, y);
-      if (c != #ffffff)
+      if (c != white)
       {
-        world.pushMatrix();
-        world.fill(c);
-        world.translate(x*gridSize-2000+gridSize/2, height/2, y*gridSize-2000+gridSize/2);
-        world.box(gridSize, height, gridSize);
-        world.popMatrix();
+        if (c == black || c == red)
+        {
+          texturedCube(x*gridSize-2000+gridSize, height-gridSize, y*gridSize-2000+gridSize, stone, gridSize);
+          texturedCube(x*gridSize-2000+gridSize, height-gridSize*2, y*gridSize-2000+gridSize, stone, gridSize);
+          texturedCube(x*gridSize-2000+gridSize, height-gridSize*3, y*gridSize-2000+gridSize, stone, gridSize);
+        } else if (c == brown)
+        {
+          texturedCube(x*gridSize-2000+gridSize, height-gridSize, y*gridSize-2000+gridSize, dirt, gridSize);
+          texturedCube(x*gridSize-2000+gridSize, height-gridSize*2, y*gridSize-2000+gridSize, dirt, gridSize);
+          texturedCube(x*gridSize-2000+gridSize, height-gridSize*3, y*gridSize-2000+gridSize, dirt, gridSize);
+        }
       }
     }
   }
 }
 
-void drawFloor()
+void drawFloor(int w, int y, int gs)
 {
   world.stroke(255);
-  for (int i = -2000; i <= 2000; i += 100)
+  world.strokeWeight(1);
+  int x = w;
+  int z = w;
+  while (z > -w)
   {
-    world.line(i, height, -2000, i, height, 2000);
-    world.line(-2000, height, i, 2000, height, i);
-  }
-  world.stroke(255);
-  for (int i = -2000; i <= 2000; i += 100)
-  {
-    world.line(i, 0, -2000, i, 0, 2000);
-    world.line(-2000, 0, i, 2000, 0, i);
+    texturedCube(x, y, z, diamond, gs);
+
+    x -= gs;
+    if (x <= -w)
+    {
+      x = w;
+      z -= gs;
+    }
   }
 }
 
